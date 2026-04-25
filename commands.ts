@@ -10,71 +10,67 @@ function startMessage() {
 };
 
 export async function add(name?: string) {
-    startMessage();
+  startMessage();
 
-    let selectedUtilName = name;
-
-    if (!selectedUtilName) {
-    const spinner = ora('Fetching registry...').start();
-    try {
-      const registry = await fetchRegistry();
-      spinner.stop();
-
-      const options = registry.utils.map(u => ({
-        value: u.name,
-        label: u.name,
-        hint: u.description
-      }));
-
-      const selected = await p.select({
-        message: 'Select a utility to add:',
-        options: options,
-      });
-
-      if (p.isCancel(selected)) {
-        p.outro(pc.yellow('Cancelled.'));
-        return;
-      }
-
-      selectedUtilName = selected as string;
-    } catch (error) {
-      spinner.fail(pc.red('Failed to load registry.'));
-      process.exit(1);
-    }
-  }
-
-  const spinner = ora(`Searching for ${pc.bold(name)}...`).start();
+  const registrySpinner = ora('Loading registry...').start();
+  let registry;
   
   try {
-    const registry = await fetchRegistry();
-    const util = registry.utils.find(u => u.name === name);
+    registry = await fetchRegistry();
+    registrySpinner.stop();
+  } catch (error) {
+    registrySpinner.fail(pc.red('Failed to load registry.'));
+    process.exit(1);
+  }
 
-    if (!util) {
-      spinner.fail(pc.red(`Util "${name}" not found in registry.`));
-      p.outro(pc.dim('Check the list of available utils with `dufresne list`'));
+  let selectedUtilName = name;
+
+  if (!selectedUtilName) {
+    const options = registry.utils.map(u => ({
+      value: u.name,
+      label: u.name,
+      hint: u.description
+    }));
+
+    const selected = await p.select({
+      message: 'Select a utility to add:',
+      options: options,
+    });
+
+    if (p.isCancel(selected)) {
+      p.outro(pc.yellow('Cancelled.'));
       return;
     }
 
-    spinner.text = pc.yellow(`Downloading ${util.file}...`);
-    const content = await fetchUtilContent(registry.baseUrl, util.file);
+    selectedUtilName = selected as string;
+  }
 
+  const util = registry.utils.find(u => u.name === selectedUtilName);
+
+  if (!util) {
+    p.log.error(pc.red(`Util "${selectedUtilName}" not found in registry.`));
+    p.outro(pc.dim('Check the list of available utils with `dufresne list`'));
+    return;
+  }
+
+  const spinner = ora(`Downloading ${pc.bold(selectedUtilName)}...`).start();
+  
+  try {
+    const content = await fetchUtilContent(registry.baseUrl, util.file);
     spinner.stop();
 
     const path = await saveUtil(util.file, content);
 
     if (path) {
-      p.note(pc.dim(path), pc.green(`Added ${pc.bold(name)}!`));
+      p.note(pc.dim(path), pc.green(`Added ${pc.bold(selectedUtilName)}!`));
       p.outro(pc.cyan('Done! Happy coding.'));
     } else {
-      p.log.warn(pc.yellow(`Skipped ${pc.bold(name)}: file not overwritten.`));
+      p.log.warn(pc.yellow(`Skipped ${pc.bold(selectedUtilName)}: file not overwritten.`));
       p.outro(pc.dim('Operation cancelled.'));
     }
 
   } catch (error) {
-    if (spinner.isSpinning) {
-      spinner.fail(pc.red('Error occurred:'));
-    }
-
+    if (spinner.isSpinning) spinner.stop();
     p.log.error(pc.red(error instanceof Error ? error.message : 'Unknown error'));
     p.outro(pc.red('Installation failed.'));
     process.exit(1);

@@ -3,6 +3,23 @@
   "baseUrl": "https://raw.githubusercontent.com/bayoux/dufresne/main/src",
   "utils": [
     {
+      "id": "idx-1451c548",
+      "name": "intersection",
+      "file": "utils/intersection.ts",
+      "description": "Returns the intersection of multiple arrays. ",
+      "category": "utils",
+      "tags": [
+        "array",
+        "filter",
+        "intersection"
+      ],
+      "hash": "6eef9349735d7b04bbebfb428fcd479e35ddce399d694b2508b1358feaa74bd4",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    {
       "id": "idx-5cfcf7a2",
       "name": "pull",
       "file": "utils/pull.ts",
@@ -13,11 +30,9 @@
         "filter",
         "transformation"
       ],
-      "hash": "1488efa6921f4dc6214d997d63fc27049a581e87cc4452f483ff4967f059fcba",
+      "hash": "8db7e4708e1dd65f7933f46d7fbc62e27deeaece72dbdcc3ae5da656e57bd520",
       "dependencies": {
-        "npm": [
-          "none"
-        ],
+        "npm": [],
         "internal": []
       }
     }
