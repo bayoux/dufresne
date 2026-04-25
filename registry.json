@@ -1,0 +1,9 @@
+{
+  "baseUrl": "https://raw.githubusercontent.com/bayoux/dufresne/main/src",
+  "utils": [
+    {
+      "name": "pull",
+      "file": "pull.ts"
+    }
+  ]
+}

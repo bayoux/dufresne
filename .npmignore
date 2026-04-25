@@ -1,0 +1,21 @@
+src/
+*.config.ts
+*.config.js
+tsconfig.json
+.prettierrc
+eslint.config.js
+
+# Dev artifacts
+node_modules/
+coverage/
+.nyc_output/
+
+# CI / git
+.github/
+.git/
+.gitignore
+
+# Editors
+.vscode/
+.idea/
+*.swp

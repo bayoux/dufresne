@@ -1,0 +1,40 @@
+{
+  "name": "dufresne",
+  "version": "0.0.4",
+  "bin": {
+    "dufresne": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch --onSuccess \"node dist/index.js\"",
+    "start": "tsx index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bayoux/dufresne.git"
+  },
+  "keywords": [
+    "utils",
+    "underscore",
+    "lodash",
+    "helpers"
+  ],
+  "author": "dayan",
+  "license": "MIT",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/bayoux/dufresne/issues"
+  },
+  "homepage": "https://github.com/bayoux/dufresne#readme",
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "commander": "^14.0.3",
+    "ora": "^9.4.0",
+    "picocolors": "^1.1.1"
+  }
+}
