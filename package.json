@@ -4,10 +4,16 @@
   "bin": {
     "dufresne": "./dist/index.js"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch --onSuccess \"node dist/index.js\"",
-    "start": "tsx index.ts"
+    "start": "tsx index.ts",
+    "lint": "tsc --noEmit",
+    "release": "release-it",
+    "prepublishOnly": "pnpm run build"
   },
   "repository": {
     "type": "git",
@@ -28,11 +34,13 @@
   "homepage": "https://github.com/bayoux/dufresne#readme",
   "devDependencies": {
     "@types/node": "^25.6.0",
+    "release-it": "^20.0.1",
     "tsup": "^8.5.1",
     "tsx": "^4.21.0",
     "typescript": "^6.0.3"
   },
   "dependencies": {
+    "@clack/prompts": "^1.2.0",
     "commander": "^14.0.3",
     "ora": "^9.4.0",
     "picocolors": "^1.1.1"
