@@ -8,7 +8,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
+    "build:registry": "tsx build-registry.ts",
+    "build": "pnpm run build:registry && tsup",
     "dev": "tsup --watch --onSuccess \"node dist/index.js\"",
     "start": "tsx index.ts",
     "lint": "tsc --noEmit",

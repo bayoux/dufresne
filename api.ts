@@ -1,6 +1,7 @@
-import type { Registry } from './types'
+import type { Registry } from './types.js';
 
 const REGISTRY_URL = 'https://raw.githubusercontent.com/bayoux/dufresne/main/registry.json';
+
 
 async function fetchWithTimeout(url: string, timeout = 10000) {
   const controller = new AbortController();
@@ -19,10 +20,14 @@ async function fetchWithTimeout(url: string, timeout = 10000) {
   }
 }
 
+
 export async function fetchRegistry(): Promise<Registry> {
   try {
     const response = await fetchWithTimeout(REGISTRY_URL);
-    if (!response.ok) throw new Error(`Registry unavailable (Status: ${response.status})`);
+    
+    if (!response.ok) {
+      throw new Error(`Registry unavailable (Status: ${response.status})`);
+    }
     
     return await response.json() as Registry;
   } catch (error) {
@@ -30,15 +35,25 @@ export async function fetchRegistry(): Promise<Registry> {
   }
 }
 
-export async function fetchUtilContent(baseUrl: string, fileName: string): Promise<string> {
-  const fileUrl = `${baseUrl}/utils/${fileName}`;
+export async function fetchUtilContent(baseUrl: string, filePath: string): Promise<string> {
+  const cleanBase = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+  const cleanPath = filePath.startsWith('/') ? filePath.slice(1) : filePath;
+  
+  const fileUrl = `${cleanBase}/${cleanPath}`;
   
   try {
     const response = await fetchWithTimeout(fileUrl);
-    if (!response.ok) throw new Error(`File ${fileName} not found (Status: ${response.status})`);
+    
+    if (!response.ok) {
+      throw new Error(`File not found: ${filePath} (Status: ${response.status})`);
+    }
     
     return await response.text();
   } catch (error) {
-    throw new Error(`Failed to download util: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    if (error instanceof Error) {
+      throw new Error(`Download failed: ${error.message}`);
+    }
+    
+    throw new Error(`Failed to download ${filePath}`);
   }
 }

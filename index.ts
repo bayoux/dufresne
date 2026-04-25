@@ -7,10 +7,11 @@ import ora from 'ora';
 import { fetchRegistry, fetchUtilContent } from './api';
 import { saveUtil } from './fs';
 
+
 const program = new Command();
 
 function startMessage() {
-  p.intro(`${pc.bgCyan(pc.black(' dufresne '))} ${pc.dim('v0.0.5')}`);
+  p.intro(`${pc.bgCyan(pc.black(' dufresne '))} ${pc.dim(process.env.VERSION)}`);
 };
 
 program
