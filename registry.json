@@ -1,9 +1,25 @@
 {
+  "schemaVersion": "1",
   "baseUrl": "https://raw.githubusercontent.com/bayoux/dufresne/main/src",
   "utils": [
     {
+      "id": "idx-5cfcf7a2",
       "name": "pull",
-      "file": "pull.ts"
+      "file": "utils/pull.ts",
+      "description": "Removes all specified values ​​from the array. Uses Set for high performance.",
+      "category": "utils",
+      "tags": [
+        "array",
+        "filter",
+        "transformation"
+      ],
+      "hash": "1488efa6921f4dc6214d997d63fc27049a581e87cc4452f483ff4967f059fcba",
+      "dependencies": {
+        "npm": [
+          "none"
+        ],
+        "internal": []
+      }
     }
   ]
 }
