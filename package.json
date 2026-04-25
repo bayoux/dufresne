@@ -1,6 +1,6 @@
 {
   "name": "dufresne",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "bin": {
     "dufresne": "./dist/index.js"
   },
