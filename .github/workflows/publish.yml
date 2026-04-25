@@ -7,9 +7,11 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
       id-token: write
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,13 +24,28 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
-          
+          node-version: 22.14.0 
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Upgrade npm CLI
+        run: npm install -g npm@11.5.1
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # - name: Run Biome Check
+      #   run: pnpm run check:ci
+
+      # - name: Run Tests
+      #   run: pnpm test
+
       - name: Build
         run: pnpm run build
+
+      - name: Create .npmrc
+        run: echo "//registry.npmjs.org/:_authToken=\${NODE_AUTH_TOKEN}" > .npmrc
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish to npm
         run: pnpm publish --no-git-checks --provenance --access public
