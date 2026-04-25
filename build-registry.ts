@@ -2,23 +2,11 @@ import { readdirSync, readFileSync, writeFileSync, statSync } from 'node:fs';
 import { join, basename, relative, extname } from 'node:path';
 import { createHash } from 'node:crypto';
 
+import type { UtilMetadata } from './types.js';
+
 const SOURCE_DIR = join(process.cwd(), 'src'); 
 const REGISTRY_PATH = join(process.cwd(), 'registry.json');
 const BASE_URL = 'https://raw.githubusercontent.com/bayoux/dufresne/main/src';
-
-interface UtilMetadata {
-  id: string;
-  name: string;
-  file: string;
-  description: string;
-  category: string;
-  tags: string[];
-  hash: string;
-  dependencies: {
-    npm: string[];
-    internal: string[];
-  };
-}
 
 
 function getFiles(dir: string): string[] {
