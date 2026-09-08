@@ -2,6 +2,116 @@
   "schemaVersion": "2",
   "baseUrl": "https://raw.githubusercontent.com/enqrose/dufresne/main/src",
   "items": {
+    "after": {
+      "id": "dfr-6839d59a",
+      "type": "util",
+      "name": "after",
+      "file": "utils/after/after.ts",
+      "description": "Wraps a function so it only runs starting from its `count`-th call.",
+      "category": "function",
+      "tags": [
+        "function",
+        "guard",
+        "counter"
+      ],
+      "usage": "low",
+      "examples": [
+        "const done = after(2, () => \"all done\");\ndone(); // undefined — 1st call\ndone(); // \"all done\" — 2nd call"
+      ],
+      "hash": "2f7c59e9d1a5168a71e5f104fb10b6391fd2bc01483866d4ea8e411fcefecd5e",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "ArrayElement": {
+      "id": "dfr-1936bfe7",
+      "type": "type",
+      "name": "ArrayElement",
+      "file": "types/ArrayElement/ArrayElement.ts",
+      "description": "Extracts the element type of an array or tuple.",
+      "category": "types",
+      "tags": [
+        "types",
+        "array",
+        "extract"
+      ],
+      "usage": "medium",
+      "examples": [
+        "type Item = ArrayElement<string[]>;\n// string"
+      ],
+      "hash": "b3fcbd9477c97a417e56e24e6a73ae674306b48369ad8dced07ead8ee90fd294",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "bfs": {
+      "id": "dfr-0b0ccabf",
+      "type": "helper",
+      "name": "bfs",
+      "file": "helpers/bfs/bfs.ts",
+      "description": "Breadth-first traversal of a graph given as an adjacency list.",
+      "category": "algorithm",
+      "tags": [
+        "algorithm",
+        "graph",
+        "traversal"
+      ],
+      "usage": "low",
+      "examples": [
+        "bfs(new Map([[\"a\", [\"b\", \"c\"]], [\"b\", [\"d\"]], [\"c\", []], [\"d\", []]]), \"a\");\n// [\"a\", \"b\", \"c\", \"d\"]"
+      ],
+      "hash": "875b673780198452d725708b149368265b3afb725f9e3fb224ceee693d13663e",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "binarySearch": {
+      "id": "dfr-93f7f30b",
+      "type": "helper",
+      "name": "binarySearch",
+      "file": "helpers/binarySearch/binarySearch.ts",
+      "description": "Finds the index of a value in an array sorted ascending, in O(log n); returns `-1` if absent.",
+      "category": "algorithm",
+      "tags": [
+        "algorithm",
+        "search",
+        "array"
+      ],
+      "usage": "medium",
+      "examples": [
+        "binarySearch([1, 3, 5, 7, 9], 7); // 3"
+      ],
+      "hash": "dc74602940a0d080ea95018b193d957f3cac32a8c5f0488e95d4addec72dfe79",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "Brand": {
+      "id": "dfr-7beab4ec",
+      "type": "type",
+      "name": "Brand",
+      "file": "types/Brand/Brand.ts",
+      "description": "Tags a primitive type so structurally-identical values from different domains can't be mixed up (nominal typing).",
+      "category": "types",
+      "tags": [
+        "types",
+        "nominal",
+        "opaque"
+      ],
+      "usage": "medium",
+      "examples": [
+        "type UserId = Brand<string, \"UserId\">;\ntype OrderId = Brand<string, \"OrderId\">;\n// a UserId and an OrderId are no longer interchangeable, even though both are strings"
+      ],
+      "hash": "664f450b74d76d23ac1122b09e66f4e8e262c8914c599105e0331409df580d9c",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
     "chunk": {
       "id": "dfr-dd355712",
       "type": "util",
@@ -45,6 +155,92 @@
         "internal": []
       }
     },
+    "compact": {
+      "id": "dfr-f9e03db0",
+      "type": "util",
+      "name": "compact",
+      "file": "utils/compact/compact.ts",
+      "description": "Removes every falsy value (`false`, `0`, `\"\"`, `null`, `undefined`, `NaN`) from an array.",
+      "category": "array",
+      "tags": [
+        "array",
+        "filter"
+      ],
+      "usage": "high",
+      "examples": [
+        "compact([0, 1, false, 2, \"\", 3]); // [1, 2, 3]"
+      ],
+      "hash": "73dfa7253f1351b4f72419de43de6efc7225b0cc6833d181447805d83e2dbed1",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "compose": {
+      "id": "dfr-066ab708",
+      "type": "util",
+      "name": "compose",
+      "file": "utils/compose/compose.ts",
+      "description": "Composes functions right to left: the last one runs first, fed with the original arguments.",
+      "category": "function",
+      "tags": [
+        "function",
+        "pipeline"
+      ],
+      "usage": "medium",
+      "examples": [
+        "const shout = compose((s: string) => s + \"!\", (s: string) => s.toUpperCase());\nshout(\"hi\"); // \"HI!\""
+      ],
+      "hash": "79c1e143656ccae8eb1e0d6eeedeb3179b71bcf2c1323d731765fa1fcf28e524",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "constant": {
+      "id": "dfr-d56dc38a",
+      "type": "util",
+      "name": "constant",
+      "file": "utils/constant/constant.ts",
+      "description": "Creates a function that always returns the given value.",
+      "category": "utility",
+      "tags": [
+        "function",
+        "default"
+      ],
+      "usage": "low",
+      "examples": [
+        "constant(42)(); // 42"
+      ],
+      "hash": "dea84d2d9599dc58ce3fa87b615fc0a7351a7845e07ee87b78df2f2b35e7a314",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "countBy": {
+      "id": "dfr-b5a67fd6",
+      "type": "util",
+      "name": "countBy",
+      "file": "utils/countBy/countBy.ts",
+      "description": "Counts array items grouped by the given selector.",
+      "category": "collection",
+      "tags": [
+        "array",
+        "object",
+        "group",
+        "count"
+      ],
+      "usage": "medium",
+      "examples": [
+        "countBy([1, 2, 3, 4, 5], (n) => (n % 2 === 0 ? \"even\" : \"odd\"));\n// { odd: 3, even: 2 }"
+      ],
+      "hash": "42fe10cee8a370de4004e9af3decf1ad14af0e1978e6f619c65cfe1142473845",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
     "debounce": {
       "id": "dfr-538cdead",
       "type": "util",
@@ -62,6 +258,51 @@
         "const onResize = debounce(() => console.log(\"resized\"), 200);\nwindow.addEventListener(\"resize\", onResize);"
       ],
       "hash": "f98bf7bca7d661c7e002d0e64410370c56bf9dc7a8ab970633f98501f4a7bc19",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "deepMerge": {
+      "id": "dfr-b11d9bf2",
+      "type": "helper",
+      "name": "deepMerge",
+      "file": "helpers/deepMerge/deepMerge.ts",
+      "description": "Recursively merges plain objects, later sources winning on conflicts; arrays and non-plain values are replaced outright, not merged element-wise. Never mutates its inputs.",
+      "category": "pattern",
+      "tags": [
+        "pattern",
+        "object",
+        "merge"
+      ],
+      "usage": "high",
+      "examples": [
+        "deepMerge({ a: { x: 1 } }, { a: { y: 2 } }); // { a: { x: 1, y: 2 } }"
+      ],
+      "hash": "aa9bd7016053568f6035a7f142d8736225b31f8874d954a8f8d66b7fe35e018f",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "DeepMutable": {
+      "id": "dfr-774ae0e4",
+      "type": "type",
+      "name": "DeepMutable",
+      "file": "types/DeepMutable/DeepMutable.ts",
+      "description": "Recursively strips `readonly` from `T`, including nested",
+      "category": "types",
+      "tags": [
+        "types",
+        "object",
+        "readonly",
+        "mutable"
+      ],
+      "usage": "low",
+      "examples": [
+        "type Config = { readonly server: { readonly host: string } };\ntype EditableConfig = DeepMutable<Config>;\n// { server: { host: string } }"
+      ],
+      "hash": "cc6dcce76b534b15f6474f887c528a97c5da82aad3c0e8cf9156630f08aa4e80",
       "dependencies": {
         "npm": [],
         "internal": []
@@ -89,6 +330,316 @@
         "internal": []
       }
     },
+    "DeepReadonly": {
+      "id": "dfr-0814319b",
+      "type": "type",
+      "name": "DeepReadonly",
+      "file": "types/DeepReadonly/DeepReadonly.ts",
+      "description": "Recursively makes every property of `T` (including nested",
+      "category": "types",
+      "tags": [
+        "types",
+        "object",
+        "readonly",
+        "immutable"
+      ],
+      "usage": "low",
+      "examples": [
+        "type Config = { server: { host: string } };\ntype ImmutableConfig = DeepReadonly<Config>;\n// { readonly server: { readonly host: string } }"
+      ],
+      "hash": "372296a9a2a26495f034dd7abf2324d18987a12beeab75a7bb59fa2b1058fb8d",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "DeepRequired": {
+      "id": "dfr-6d1b5fe9",
+      "type": "type",
+      "name": "DeepRequired",
+      "file": "types/DeepRequired/DeepRequired.ts",
+      "description": "Recursively makes every property of `T` (including nested",
+      "category": "types",
+      "tags": [
+        "types",
+        "object",
+        "required"
+      ],
+      "usage": "low",
+      "examples": [
+        "type Config = { server?: { host?: string; port?: number } };\ntype FullConfig = DeepRequired<Config>;\n// { server: { host: string; port: number } }"
+      ],
+      "hash": "7c49f84786e69db6a354fcb8e1be13ee256ecfedc24b6bc2eaf948ba4e05ab01",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "defaults": {
+      "id": "dfr-64136684",
+      "type": "util",
+      "name": "defaults",
+      "file": "utils/defaults/defaults.ts",
+      "description": "Fills in `undefined` properties of an object from one or more source objects, without mutating any of them.",
+      "category": "object",
+      "tags": [
+        "object",
+        "merge"
+      ],
+      "usage": "medium",
+      "examples": [
+        "defaults({ a: 1 }, { a: 2, b: 2 }, { b: 3, c: 3 }); // { a: 1, b: 2, c: 3 }"
+      ],
+      "hash": "4ac0fafd5a12268c12a032e2714b7bd1db99d04d8988405bc68bc4d6bb55ec16",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "dfs": {
+      "id": "dfr-84b27f0c",
+      "type": "helper",
+      "name": "dfs",
+      "file": "helpers/dfs/dfs.ts",
+      "description": "Depth-first traversal of a graph given as an adjacency list.",
+      "category": "algorithm",
+      "tags": [
+        "algorithm",
+        "graph",
+        "traversal"
+      ],
+      "usage": "low",
+      "examples": [
+        "dfs(new Map([[\"a\", [\"b\", \"c\"]], [\"b\", [\"d\"]], [\"c\", []], [\"d\", []]]), \"a\");\n// [\"a\", \"b\", \"d\", \"c\"]"
+      ],
+      "hash": "7457dcc8c3ec34faa3396271d6ba7b619f12589f9a7405cce945bd3ca27a5bc4",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "difference": {
+      "id": "dfr-8920fd52",
+      "type": "util",
+      "name": "difference",
+      "file": "utils/difference/difference.ts",
+      "description": "Returns the values in an array that are not present in any of the other arrays.",
+      "category": "array",
+      "tags": [
+        "array",
+        "filter",
+        "set"
+      ],
+      "usage": "medium",
+      "examples": [
+        "difference([1, 2, 3, 4], [2, 4]); // [1, 3]"
+      ],
+      "hash": "1d09a8fec20694e554aa16030982add8f817e35a4ab27bd9fa48f365369ea189",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "DistributiveOmit": {
+      "id": "dfr-f5c35c3c",
+      "type": "type",
+      "name": "DistributiveOmit",
+      "file": "types/DistributiveOmit/DistributiveOmit.ts",
+      "description": "Like `Omit`, but distributes over a union instead of collapsing it first. Plain `Omit` on a discriminated union only sees the keys common to every member, so it silently drops the union's other fields; this keeps them.",
+      "category": "types",
+      "tags": [
+        "types",
+        "object",
+        "union",
+        "advanced"
+      ],
+      "usage": "low",
+      "examples": [
+        "type Shape = { kind: \"circle\"; r: number } | { kind: \"square\"; s: number };\ntype WithoutKind = DistributiveOmit<Shape, \"kind\">;\n// { r: number } | { s: number }"
+      ],
+      "hash": "18e4ddb2117080d745e3fa57e90cf980cd137e7cd49658845939d0ad907035c2",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "Entries": {
+      "id": "dfr-375e6927",
+      "type": "type",
+      "name": "Entries",
+      "file": "types/Entries/Entries.ts",
+      "description": "A typed version of `Object.entries`'s return shape: an array of `[key, value]` tuples for `T`.",
+      "category": "types",
+      "tags": [
+        "types",
+        "object",
+        "tuple"
+      ],
+      "usage": "low",
+      "examples": [
+        "type UserEntries = Entries<{ id: string; age: number }>;\n// Array<[\"id\", string] | [\"age\", number]>"
+      ],
+      "hash": "d51f4a225b7eda57146a78b75a45fc1b1ce02e2ddbba57b359b5d0a1746631b0",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "escape": {
+      "id": "dfr-27052c18",
+      "type": "util",
+      "name": "escape",
+      "file": "utils/escape/escape.ts",
+      "description": "Escapes `& < > \" ' \\`` so a string is safe to drop into HTML.",
+      "category": "string",
+      "tags": [
+        "string",
+        "html",
+        "escape"
+      ],
+      "usage": "medium",
+      "examples": [
+        "escape(\"<b>Tom & Jerry</b>\"); // \"&lt;b&gt;Tom &amp; Jerry&lt;/b&gt;\""
+      ],
+      "hash": "f01b1a857f7af20eae51840dd7cf401ef2f7385d0838a6fe6a6429e034f31e2c",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "EventEmitter": {
+      "id": "dfr-e56fc933",
+      "type": "helper",
+      "name": "EventEmitter",
+      "file": "helpers/EventEmitter/EventEmitter.ts",
+      "description": "A minimal publish/subscribe emitter — `on`/`off`/`once`/`emit`.",
+      "category": "pattern",
+      "tags": [
+        "pattern",
+        "events",
+        "pubsub"
+      ],
+      "usage": "high",
+      "examples": [
+        "const emitter = new EventEmitter();\nemitter.on(\"greet\", (name: string) => console.log(`Hello, ${name}!`));\nemitter.emit(\"greet\", \"world\");"
+      ],
+      "hash": "174ff02158e6a96c0632641b2d83069cd438feb93768c9e58a0cacca4e626bdd",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "fibonacci": {
+      "id": "dfr-9dcf0aab",
+      "type": "helper",
+      "name": "fibonacci",
+      "file": "helpers/fibonacci/fibonacci.ts",
+      "description": "Returns the n-th Fibonacci number (0-indexed: `fibonacci(0) === 0`, `fibonacci(1) === 1`), memoized across calls.",
+      "category": "algorithm",
+      "tags": [
+        "algorithm",
+        "number",
+        "memoize",
+        "recursion"
+      ],
+      "usage": "low",
+      "examples": [
+        "fibonacci(10); // 55"
+      ],
+      "hash": "4055cb6a4abcbde7ba5060d063cff8a27b1b2a665b83e67b5ef440814cb8fcd6",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "first": {
+      "id": "dfr-b8b2c3ce",
+      "type": "util",
+      "name": "first",
+      "file": "utils/first/first.ts",
+      "description": "Returns the first element of an array, or the first `n` when given.",
+      "category": "array",
+      "tags": [
+        "array",
+        "slice"
+      ],
+      "usage": "high",
+      "examples": [
+        "first([1, 2, 3]); // 1",
+        "first([1, 2, 3], 2); // [1, 2]"
+      ],
+      "hash": "6438f3cbc726b6b12a685db730014884e5c28766b55f9422c4e27c2e6ea0c152",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "flattenObject": {
+      "id": "dfr-f01e4e56",
+      "type": "helper",
+      "name": "flattenObject",
+      "file": "helpers/flattenObject/flattenObject.ts",
+      "description": "Flattens a nested object into a single level, joining keys with `.` (e.g. `{ a: { b: 1 } }` becomes `{ \"a.b\": 1 }`). Arrays are kept as leaf values, not descended into.",
+      "category": "pattern",
+      "tags": [
+        "pattern",
+        "object",
+        "transform"
+      ],
+      "usage": "medium",
+      "examples": [
+        "flattenObject({ a: { b: 1, c: { d: 2 } } }); // { \"a.b\": 1, \"a.c.d\": 2 }"
+      ],
+      "hash": "8c3c3f6007f36799e54f0c98301635d8dacb2ef86993b3a5445a52b2758e7a65",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "gcd": {
+      "id": "dfr-8fbfc77c",
+      "type": "helper",
+      "name": "gcd",
+      "file": "helpers/gcd/gcd.ts",
+      "description": "The greatest common divisor of two integers (Euclidean algorithm).",
+      "category": "algorithm",
+      "tags": [
+        "algorithm",
+        "number",
+        "math"
+      ],
+      "usage": "low",
+      "examples": [
+        "gcd(12, 18); // 6"
+      ],
+      "hash": "5308ba73db1d85e40efeca220915d0dc5390fe1b3b0d16bcb9edecfea07bbccf",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "get": {
+      "id": "dfr-acb8f63f",
+      "type": "helper",
+      "name": "get",
+      "file": "helpers/get/get.ts",
+      "description": "Safely reads a nested property by a dot/bracket path (e.g. `\"a.b[0].c\"`), returning a fallback if any step is missing.",
+      "category": "pattern",
+      "tags": [
+        "pattern",
+        "object",
+        "path"
+      ],
+      "usage": "high",
+      "examples": [
+        "get({ a: { b: [1, 2] } }, \"a.b[1]\"); // 2"
+      ],
+      "hash": "4973f7c6e869a2deda704863b4b3536e6de221b862e3f14255257fa98efc463e",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
     "groupBy": {
       "id": "dfr-659431ba",
       "type": "util",
@@ -106,6 +657,49 @@
         "groupBy([1, 2, 3, 4], (n) => (n % 2 === 0 ? \"even\" : \"odd\"));\n// { odd: [1, 3], even: [2, 4] }"
       ],
       "hash": "367e0f019f688fbd5b933253b9a95abc512426bbb3070153879027bad306ed9b",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "identity": {
+      "id": "dfr-2e850334",
+      "type": "util",
+      "name": "identity",
+      "file": "utils/identity/identity.ts",
+      "description": "Returns its single argument unchanged. Useful as a default/no-op callback.",
+      "category": "utility",
+      "tags": [
+        "function",
+        "default"
+      ],
+      "usage": "medium",
+      "examples": [
+        "identity(42); // 42"
+      ],
+      "hash": "3806cc3c98e2eab83b6175c7b2b0dc40178bfbb585430457ad475146383f6a29",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "initial": {
+      "id": "dfr-c38dd41e",
+      "type": "util",
+      "name": "initial",
+      "file": "utils/initial/initial.ts",
+      "description": "Returns every element except the last `n` (default 1).",
+      "category": "array",
+      "tags": [
+        "array",
+        "slice"
+      ],
+      "usage": "medium",
+      "examples": [
+        "initial([1, 2, 3]); // [1, 2]",
+        "initial([1, 2, 3], 2); // [1]"
+      ],
+      "hash": "71434fb9b966e1a9e1b6be853b1593694e4c4ae585bcee2406ee7c0b9eae6a91",
       "dependencies": {
         "npm": [],
         "internal": []
@@ -133,6 +727,464 @@
         "internal": []
       }
     },
+    "invert": {
+      "id": "dfr-6bae8efe",
+      "type": "util",
+      "name": "invert",
+      "file": "utils/invert/invert.ts",
+      "description": "Swaps an object's keys and values.",
+      "category": "object",
+      "tags": [
+        "object",
+        "transform"
+      ],
+      "usage": "low",
+      "examples": [
+        "invert({ a: \"x\", b: \"y\" }); // { x: \"a\", y: \"b\" }"
+      ],
+      "hash": "397e05036b4703f9ae03d2cf02706084636c29120b8c8c5a06de1ff8da19568e",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "isEmpty": {
+      "id": "dfr-4464c606",
+      "type": "util",
+      "name": "isEmpty",
+      "file": "utils/isEmpty/isEmpty.ts",
+      "description": "Checks whether a value has no content: `null`/`undefined`, an empty array/string, an empty `Map`/`Set`, or an object with no own keys.",
+      "category": "object",
+      "tags": [
+        "object",
+        "array",
+        "check"
+      ],
+      "usage": "medium",
+      "examples": [
+        "isEmpty({}); // true",
+        "isEmpty({ a: 1 }); // false"
+      ],
+      "hash": "2325c7c94deffb0aa49d74e66fca66868bf2867cb8d97a091089cfd77d865dcc",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "isEqual": {
+      "id": "dfr-168c3423",
+      "type": "util",
+      "name": "isEqual",
+      "file": "utils/isEqual/isEqual.ts",
+      "description": "Deep-compares two values: arrays, dates, and plain objects are compared by content.",
+      "category": "object",
+      "tags": [
+        "object",
+        "compare",
+        "equality"
+      ],
+      "usage": "high",
+      "examples": [
+        "isEqual({ a: [1, 2] }, { a: [1, 2] }); // true"
+      ],
+      "hash": "a037d94ced9eb10f436b3cd1ab71053327af8a68d396e5e49cf2ddf476df1b49",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "isPrime": {
+      "id": "dfr-bb7b4192",
+      "type": "helper",
+      "name": "isPrime",
+      "file": "helpers/isPrime/isPrime.ts",
+      "description": "Checks whether an integer is prime, by trial division up to `sqrt(n)`.",
+      "category": "algorithm",
+      "tags": [
+        "algorithm",
+        "number",
+        "math"
+      ],
+      "usage": "low",
+      "examples": [
+        "isPrime(17); // true",
+        "isPrime(18); // false"
+      ],
+      "hash": "29baefaed11b7b2ee9a65ad9603d2af1eeda439a5931c576591b51d9d538fa3a",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "JsonValue": {
+      "id": "dfr-112bdfa3",
+      "type": "type",
+      "name": "JsonValue",
+      "file": "types/JsonValue/JsonValue.ts",
+      "description": "Any value that survives a `JSON.stringify`/`JSON.parse` round-trip: a primitive, or nested arrays/objects of those.",
+      "category": "types",
+      "tags": [
+        "types",
+        "json",
+        "serialize"
+      ],
+      "usage": "medium",
+      "examples": [
+        "const config: JsonValue = { a: 1, b: [true, null, \"x\"] };"
+      ],
+      "hash": "cf45ee90aef027c0c4d1401315663ac764c8f875afb6cee93b9a14ac68431ed2",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "last": {
+      "id": "dfr-be70f846",
+      "type": "util",
+      "name": "last",
+      "file": "utils/last/last.ts",
+      "description": "Returns the last element of an array, or the last `n` when given.",
+      "category": "array",
+      "tags": [
+        "array",
+        "slice"
+      ],
+      "usage": "high",
+      "examples": [
+        "last([1, 2, 3]); // 3",
+        "last([1, 2, 3], 2); // [2, 3]"
+      ],
+      "hash": "f52f681b914e4ca5a2e41b40d92968117636a834d75065d9437e7f8bfdeca880",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "lcm": {
+      "id": "dfr-df7e57bb",
+      "type": "helper",
+      "name": "lcm",
+      "file": "helpers/lcm/lcm.ts",
+      "description": "The least common multiple of two integers.",
+      "category": "algorithm",
+      "tags": [
+        "algorithm",
+        "number",
+        "math"
+      ],
+      "usage": "low",
+      "examples": [
+        "lcm(4, 6); // 12"
+      ],
+      "hash": "23e337e42732eb994ade71b72a57971b6999ee0eb5ffc30a8a1e6dcb5406e571",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "levenshteinDistance": {
+      "id": "dfr-621c04d0",
+      "type": "helper",
+      "name": "levenshteinDistance",
+      "file": "helpers/levenshteinDistance/levenshteinDistance.ts",
+      "description": "The minimum number of single-character edits (insert, delete, substitute) to turn one string into another.",
+      "category": "algorithm",
+      "tags": [
+        "algorithm",
+        "string",
+        "distance",
+        "fuzzy-search"
+      ],
+      "usage": "medium",
+      "examples": [
+        "levenshteinDistance(\"kitten\", \"sitting\"); // 3"
+      ],
+      "hash": "e14d7eba490f3e93ccfb98134abeb43d30e42d361e719ae63ceeec67ec8c74f9",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "LinkedList": {
+      "id": "dfr-605692a6",
+      "type": "helper",
+      "name": "LinkedList",
+      "file": "helpers/LinkedList/LinkedList.ts",
+      "description": "A singly linked list — O(1) push/shift, O(n) random access.",
+      "category": "data-structure",
+      "tags": [
+        "data-structure",
+        "linked-list"
+      ],
+      "usage": "low",
+      "examples": [
+        "const list = new LinkedList<number>();\nlist.push(1);\nlist.push(2);\nlist.toArray(); // [1, 2]"
+      ],
+      "hash": "26833c942d4999bd4a5fcf0f92f8649db95f87346795154189fb9e79de9e3009",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "LiteralUnion": {
+      "id": "dfr-549d0eac",
+      "type": "type",
+      "name": "LiteralUnion",
+      "file": "types/LiteralUnion/LiteralUnion.ts",
+      "description": "A union of literal values that still accepts any value of the base type — keeps editor autocomplete for the literals without losing flexibility (unlike `T | string`, which collapses to just `string`).",
+      "category": "types",
+      "tags": [
+        "types",
+        "union",
+        "literal"
+      ],
+      "usage": "medium",
+      "examples": [
+        "type Size = LiteralUnion<\"sm\" | \"md\" | \"lg\", string>;\n// autocompletes \"sm\" | \"md\" | \"lg\", but still accepts any other string"
+      ],
+      "hash": "aae178109cb0ab0701e7b17124df71c805fee3957b0696e14e7d9b207bc8a917",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "LRUCache": {
+      "id": "dfr-e5a776bb",
+      "type": "helper",
+      "name": "LRUCache",
+      "file": "helpers/LRUCache/LRUCache.ts",
+      "description": "A fixed-capacity cache that evicts the least-recently-used entry once full — O(1) `get`/`set`.",
+      "category": "data-structure",
+      "tags": [
+        "data-structure",
+        "cache",
+        "lru"
+      ],
+      "usage": "high",
+      "examples": [
+        "const cache = new LRUCache<string, number>(2);\ncache.set(\"a\", 1);\ncache.set(\"b\", 2);\ncache.set(\"c\", 3); // evicts \"a\", the least recently used\ncache.has(\"a\"); // false"
+      ],
+      "hash": "a0c21cd2eae5ee818eceb9dd9748a94ce8b507d184743c09ebdc4f8232e04b19",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "memoize": {
+      "id": "dfr-7f481458",
+      "type": "util",
+      "name": "memoize",
+      "file": "utils/memoize/memoize.ts",
+      "description": "Caches a function's results, keyed by its first argument (or a custom resolver).",
+      "category": "function",
+      "tags": [
+        "function",
+        "cache",
+        "performance"
+      ],
+      "usage": "medium",
+      "examples": [
+        "const square = memoize((n: number) => n * n);\nsquare(4); // 16"
+      ],
+      "hash": "59d83db7ed4267b34d29aca051968029447b2f26c0b630776c9b48740aa72b27",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "Merge": {
+      "id": "dfr-249988cf",
+      "type": "type",
+      "name": "Merge",
+      "file": "types/Merge/Merge.ts",
+      "description": "Shallowly merges two object types; `U`'s properties override `T`'s on conflict — the type-level version of `{ ...t, ...u }`.",
+      "category": "types",
+      "tags": [
+        "types",
+        "object",
+        "merge"
+      ],
+      "usage": "medium",
+      "examples": [
+        "type Base = { id: string; name: string };\ntype Override = { name: number };\ntype Merged = Merge<Base, Override>;\n// { id: string; name: number }"
+      ],
+      "hash": "996fc3ba20d9025a563a8ecd94c4c5dc8cd6649df947d0a6e96d0a1bfe44c462",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "mergeSort": {
+      "id": "dfr-b71600ef",
+      "type": "helper",
+      "name": "mergeSort",
+      "file": "helpers/mergeSort/mergeSort.ts",
+      "description": "Sorts an array with merge sort — stable, guaranteed O(n log n). Returns a new array, does not mutate the input.",
+      "category": "algorithm",
+      "tags": [
+        "algorithm",
+        "sort",
+        "array"
+      ],
+      "usage": "low",
+      "examples": [
+        "mergeSort([5, 3, 8, 1, 9, 2]); // [1, 2, 3, 5, 8, 9]"
+      ],
+      "hash": "095c330150e8b09fcffd42b14cb8413c7d9af7d6e18a7b71e0dee4c17e2410d9",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "Mutable": {
+      "id": "dfr-4ff95a56",
+      "type": "type",
+      "name": "Mutable",
+      "file": "types/Mutable/Mutable.ts",
+      "description": "Strips `readonly` from every top-level property of `T`.",
+      "category": "types",
+      "tags": [
+        "types",
+        "object",
+        "readonly",
+        "mutable"
+      ],
+      "usage": "low",
+      "examples": [
+        "type Config = { readonly host: string; readonly port: number };\ntype EditableConfig = Mutable<Config>;\n// { host: string; port: number }"
+      ],
+      "hash": "4d96060b646919eaddc29150312614305e4704fd4f5255e516aec54618dca47b",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "negate": {
+      "id": "dfr-6e917a29",
+      "type": "util",
+      "name": "negate",
+      "file": "utils/negate/negate.ts",
+      "description": "Wraps a predicate so it returns the opposite boolean.",
+      "category": "function",
+      "tags": [
+        "function",
+        "predicate"
+      ],
+      "usage": "medium",
+      "examples": [
+        "const isOdd = negate((n: number) => n % 2 === 0);\nisOdd(3); // true"
+      ],
+      "hash": "b3792e5a45789e79ca7c6ad992b1461ed7e7aa321318f8d60acac90642364730",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "noop": {
+      "id": "dfr-299472f3",
+      "type": "util",
+      "name": "noop",
+      "file": "utils/noop/noop.ts",
+      "description": "Does nothing and returns `undefined`. A placeholder default callback.",
+      "category": "utility",
+      "tags": [
+        "function",
+        "default"
+      ],
+      "usage": "low",
+      "examples": [
+        "noop(); // undefined"
+      ],
+      "hash": "352e983902e290876baee0deb3af3179de5239b9b4599ffa53680a6411e70382",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "Nullable": {
+      "id": "dfr-a7056375",
+      "type": "type",
+      "name": "Nullable",
+      "file": "types/Nullable/Nullable.ts",
+      "description": "Allows `T` or `null` — distinct from an optional property, which also allows `undefined`.",
+      "category": "types",
+      "tags": [
+        "types",
+        "null"
+      ],
+      "usage": "medium",
+      "examples": [
+        "type MaybeUser = Nullable<{ id: string }>;\n// { id: string } | null"
+      ],
+      "hash": "79c7e01115a1a9604b95ff14f8b70467d772e1b074441475ebe323fa48be8b5c",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "omit": {
+      "id": "dfr-001d344f",
+      "type": "util",
+      "name": "omit",
+      "file": "utils/omit/omit.ts",
+      "description": "Builds a new object without the given keys.",
+      "category": "object",
+      "tags": [
+        "object",
+        "filter"
+      ],
+      "usage": "high",
+      "examples": [
+        "omit({ a: 1, b: 2, c: 3 }, \"b\"); // { a: 1, c: 3 }"
+      ],
+      "hash": "f8344f5b86b591285af2c6ae33e80341fc5a43a50d13f3816c3edb5f42629ff3",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "once": {
+      "id": "dfr-cbdb86e6",
+      "type": "util",
+      "name": "once",
+      "file": "utils/once/once.ts",
+      "description": "Wraps a function so it only ever runs the first time it's called.",
+      "category": "function",
+      "tags": [
+        "function",
+        "guard"
+      ],
+      "usage": "high",
+      "examples": [
+        "once(() => 1)(); // 1"
+      ],
+      "hash": "3a20a9e5cc3dfbcd58251d53d0a8a26e0ab04a535fe2286d05ab2ff81d07806c",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "partial": {
+      "id": "dfr-5748e182",
+      "type": "util",
+      "name": "partial",
+      "file": "utils/partial/partial.ts",
+      "description": "Pre-fills a function's leading arguments, returning a function for the rest.",
+      "category": "function",
+      "tags": [
+        "function",
+        "currying"
+      ],
+      "usage": "medium",
+      "examples": [
+        "const greet = (greeting: string, name: string) => `${greeting}, ${name}!`;\npartial(greet, \"Hello\")(\"world\"); // \"Hello, world!\""
+      ],
+      "hash": "31c1688db94f493fd4e8cb6ae213fa38c3acee56b893e6f12f63ee067d408998",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
     "PartialBy": {
       "id": "dfr-4ac3c04b",
       "type": "type",
@@ -150,6 +1202,93 @@
         "interface User { id: string; name: string; email: string }\ntype NewUser = PartialBy<User, \"id\">;\n// { id?: string; name: string; email: string }"
       ],
       "hash": "f158201176ed803acd1eeb7b090fa40816039579133bb097c9a73199133ebae7",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "PartialRecord": {
+      "id": "dfr-c22faf7b",
+      "type": "type",
+      "name": "PartialRecord",
+      "file": "types/PartialRecord/PartialRecord.ts",
+      "description": "A `Record` where every value is optional — shorthand for `Partial<Record<K, V>>`.",
+      "category": "types",
+      "tags": [
+        "types",
+        "object",
+        "record"
+      ],
+      "usage": "medium",
+      "examples": [
+        "type Flags = PartialRecord<\"dev\" | \"prod\", boolean>;\n// { dev?: boolean; prod?: boolean }"
+      ],
+      "hash": "ed794e3ba2ac13cb385fb2cb67e3f5bf5933bbdbb18346edc4c292d56cd51bca",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "partition": {
+      "id": "dfr-fc34496e",
+      "type": "util",
+      "name": "partition",
+      "file": "utils/partition/partition.ts",
+      "description": "Splits an array into two: items that pass the predicate, and items that don't.",
+      "category": "collection",
+      "tags": [
+        "array",
+        "filter",
+        "split"
+      ],
+      "usage": "medium",
+      "examples": [
+        "partition([1, 2, 3, 4, 5], (n) => n % 2 === 0); // [[2, 4], [1, 3, 5]]"
+      ],
+      "hash": "b3cfffab4d86673e09bb080bc5af5f7aa80689c94c612176b10cafb9b3b84d75",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "pick": {
+      "id": "dfr-21e64037",
+      "type": "util",
+      "name": "pick",
+      "file": "utils/pick/pick.ts",
+      "description": "Builds a new object containing only the given keys.",
+      "category": "object",
+      "tags": [
+        "object",
+        "filter"
+      ],
+      "usage": "high",
+      "examples": [
+        "pick({ a: 1, b: 2, c: 3 }, \"a\", \"c\"); // { a: 1, c: 3 }"
+      ],
+      "hash": "aa664bb0b3d4e8be0934f213543601bbddf59a83171a01a52a5820e51952f6be",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "pluck": {
+      "id": "dfr-391d5296",
+      "type": "util",
+      "name": "pluck",
+      "file": "utils/pluck/pluck.ts",
+      "description": "Extracts a single property's value from every item in an array.",
+      "category": "collection",
+      "tags": [
+        "array",
+        "object",
+        "extract"
+      ],
+      "usage": "medium",
+      "examples": [
+        "pluck([{ id: 1 }, { id: 2 }], \"id\"); // [1, 2]"
+      ],
+      "hash": "55c5aff71d240c98bd980541582aa2fb293cd02275cc073d80502c63bcd28627",
       "dependencies": {
         "npm": [],
         "internal": []
@@ -177,6 +1316,28 @@
         "internal": []
       }
     },
+    "PriorityQueue": {
+      "id": "dfr-8c46f236",
+      "type": "helper",
+      "name": "PriorityQueue",
+      "file": "helpers/PriorityQueue/PriorityQueue.ts",
+      "description": "A binary min-heap: `pop()` always returns the item with the lowest priority number first.",
+      "category": "data-structure",
+      "tags": [
+        "data-structure",
+        "heap",
+        "priority-queue"
+      ],
+      "usage": "low",
+      "examples": [
+        "const pq = new PriorityQueue<string>();\npq.push(\"low\", 5);\npq.push(\"high\", 1);\npq.pop(); // \"high\""
+      ],
+      "hash": "7318f990ae7f4ca2d6da8d9d3737bd7f8d0a487c7dafd25700cf838bd4269dfb",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
     "pull": {
       "id": "dfr-b4fea42f",
       "type": "util",
@@ -199,6 +1360,239 @@
         "internal": []
       }
     },
+    "Queue": {
+      "id": "dfr-efb319f8",
+      "type": "helper",
+      "name": "Queue",
+      "file": "helpers/Queue/Queue.ts",
+      "description": "A FIFO queue — enqueue/dequeue/peek.",
+      "category": "data-structure",
+      "tags": [
+        "data-structure",
+        "queue",
+        "fifo"
+      ],
+      "usage": "medium",
+      "examples": [
+        "const q = new Queue<number>();\nq.enqueue(1);\nq.enqueue(2);\nq.dequeue(); // 1"
+      ],
+      "hash": "f66a4851c1209c18720351f49b616d9b88593ae10de1c434e0351fdfbc93361c",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "quickSort": {
+      "id": "dfr-0ceaeac8",
+      "type": "helper",
+      "name": "quickSort",
+      "file": "helpers/quickSort/quickSort.ts",
+      "description": "Sorts an array with quicksort (Lomuto partition, average O(n log n)); returns a new array, does not mutate the input.",
+      "category": "algorithm",
+      "tags": [
+        "algorithm",
+        "sort",
+        "array"
+      ],
+      "usage": "low",
+      "examples": [
+        "quickSort([5, 3, 8, 1, 9, 2]); // [1, 2, 3, 5, 8, 9]"
+      ],
+      "hash": "b6350d17d82b14004965f4dbd76c2c03c70b89ec1b076a3dda7c2042d75875ce",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "random": {
+      "id": "dfr-37a12502",
+      "type": "util",
+      "name": "random",
+      "file": "utils/random/random.ts",
+      "description": "Returns a random integer, inclusive of both bounds. With one argument, the range starts at 0.",
+      "category": "utility",
+      "tags": [
+        "number",
+        "random"
+      ],
+      "usage": "low",
+      "examples": [],
+      "hash": "9f527b8c8fc373d542b4c1bafb49a6001a46779566cf71311e050f24a5595c0d",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "range": {
+      "id": "dfr-2c697048",
+      "type": "util",
+      "name": "range",
+      "file": "utils/range/range.ts",
+      "description": "Builds an array of numbers from `start` up to (excluding) `stop`, by `step`.",
+      "category": "array",
+      "tags": [
+        "array",
+        "number",
+        "generate"
+      ],
+      "usage": "medium",
+      "examples": [
+        "range(5); // [0, 1, 2, 3, 4]",
+        "range(2, 10, 2); // [2, 4, 6, 8]"
+      ],
+      "hash": "f7e45740e92984ff391cbe9b02d8db54b1764090c0a88249d66c09460f7eb43d",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "RequireAtLeastOne": {
+      "id": "dfr-c2c7cde9",
+      "type": "type",
+      "name": "RequireAtLeastOne",
+      "file": "types/RequireAtLeastOne/RequireAtLeastOne.ts",
+      "description": "Keeps every key of `T` optional, except that at least one of the given `K` keys must be present.",
+      "category": "types",
+      "tags": [
+        "types",
+        "object",
+        "required",
+        "advanced"
+      ],
+      "usage": "low",
+      "examples": [
+        "interface Filters { id?: string; email?: string; phone?: string }\ntype Search = RequireAtLeastOne<Filters, \"id\" | \"email\" | \"phone\">;\n// needs at least one of id / email / phone"
+      ],
+      "hash": "7c4ea254f3eded534cae0353cdfabb66d8412d518864ff4420edf63cc9aecfe0",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "RequiredBy": {
+      "id": "dfr-bf3db905",
+      "type": "type",
+      "name": "RequiredBy",
+      "file": "types/RequiredBy/RequiredBy.ts",
+      "description": "Makes the given keys of `T` required while leaving the rest",
+      "category": "types",
+      "tags": [
+        "types",
+        "object",
+        "required"
+      ],
+      "usage": "medium",
+      "examples": [
+        "interface Options { id?: string; label?: string }\ntype WithId = RequiredBy<Options, \"id\">;\n// { id: string; label?: string }"
+      ],
+      "hash": "c4671c3e343be466cf054df0d587fb2a2c0550feb6deca70046be33c052b97a5",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "rest": {
+      "id": "dfr-c1cf5ed5",
+      "type": "util",
+      "name": "rest",
+      "file": "utils/rest/rest.ts",
+      "description": "Returns every element except the first `n` (default 1).",
+      "category": "array",
+      "tags": [
+        "array",
+        "slice"
+      ],
+      "usage": "medium",
+      "examples": [
+        "rest([1, 2, 3]); // [2, 3]",
+        "rest([1, 2, 3], 2); // [3]"
+      ],
+      "hash": "ac31daa2db88885b634105f03f8fc6621caffb2128abd5e455759c0e80090cfe",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "retry": {
+      "id": "dfr-b1c62f2a",
+      "type": "helper",
+      "name": "retry",
+      "file": "helpers/retry/retry.ts",
+      "description": "Retries an async function up to `attempts` times, waiting with exponential backoff between tries. Rethrows the last error once attempts run out.",
+      "category": "pattern",
+      "tags": [
+        "pattern",
+        "async",
+        "resilience"
+      ],
+      "usage": "high",
+      "examples": [],
+      "hash": "2b00b8cf458923dd09211a9ab072273f8b2d396fabfd45803914851f528a8166",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "sample": {
+      "id": "dfr-7eac6522",
+      "type": "util",
+      "name": "sample",
+      "file": "utils/sample/sample.ts",
+      "description": "Picks one random element from an array, or `n` distinct random elements.",
+      "category": "array",
+      "tags": [
+        "array",
+        "random"
+      ],
+      "usage": "low",
+      "examples": [],
+      "hash": "751670d5d567784dc57d1b678f6ac7d1dbcecff4d1dc2cc70b818d32f94286b3",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "set": {
+      "id": "dfr-f9286a9b",
+      "type": "helper",
+      "name": "set",
+      "file": "helpers/set/set.ts",
+      "description": "Writes a nested property by a dot/bracket path (e.g. `\"a.b[0].c\"`), creating intermediate objects as needed. Mutates and returns `obj`.",
+      "category": "pattern",
+      "tags": [
+        "pattern",
+        "object",
+        "path"
+      ],
+      "usage": "medium",
+      "examples": [
+        "set({}, \"a.b.c\", 1); // { a: { b: { c: 1 } } }"
+      ],
+      "hash": "7711b051c8ace46077a4107e4598b60d23b3dcfdab403a76e52f86a8be87f1e2",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "shuffle": {
+      "id": "dfr-53a3b0b2",
+      "type": "util",
+      "name": "shuffle",
+      "file": "utils/shuffle/shuffle.ts",
+      "description": "Returns a new array with the same elements in random order (Fisher-Yates).",
+      "category": "array",
+      "tags": [
+        "array",
+        "random"
+      ],
+      "usage": "low",
+      "examples": [],
+      "hash": "0d5bcb2479c5167c2c54736a5176a0c0d8ac36a86d4ed4489e13b45f0a5d0888",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
     "sleep": {
       "id": "dfr-9b8b4e53",
       "type": "util",
@@ -216,6 +1610,315 @@
         "await sleep(200);"
       ],
       "hash": "e07e835c161a4953e6dbd2c605a6ab3d0b90bd146ab08b0939160cc5b9c54b83",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "Stack": {
+      "id": "dfr-fbf840e3",
+      "type": "helper",
+      "name": "Stack",
+      "file": "helpers/Stack/Stack.ts",
+      "description": "A LIFO stack — push/pop/peek in O(1).",
+      "category": "data-structure",
+      "tags": [
+        "data-structure",
+        "stack",
+        "lifo"
+      ],
+      "usage": "medium",
+      "examples": [
+        "const s = new Stack<number>();\ns.push(1);\ns.push(2);\ns.pop(); // 2"
+      ],
+      "hash": "01f27c4652bb5b808adcb9ee9f16ed1c25fe17c881b6cfe1cc02bcc292322b07",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "StateMachine": {
+      "id": "dfr-2d6e43c4",
+      "type": "helper",
+      "name": "StateMachine",
+      "file": "helpers/StateMachine/StateMachine.ts",
+      "description": "A minimal finite state machine: define allowed transitions per state, then `send()` events and read `.state`.",
+      "category": "pattern",
+      "tags": [
+        "pattern",
+        "state",
+        "fsm"
+      ],
+      "usage": "medium",
+      "examples": [
+        "const light = new StateMachine(\"red\", { red: { go: \"green\" }, green: { stop: \"red\" } });\nlight.send(\"go\");\nlight.state; // \"green\""
+      ],
+      "hash": "dd06a50091bd03117e47e171755bc7ec7f9a4caafecdf2f1cdf26dbc55ba5287",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "times": {
+      "id": "dfr-86081eed",
+      "type": "util",
+      "name": "times",
+      "file": "utils/times/times.ts",
+      "description": "Invokes a function `n` times, collecting the results.",
+      "category": "utility",
+      "tags": [
+        "function",
+        "generate",
+        "loop"
+      ],
+      "usage": "medium",
+      "examples": [
+        "times(3, (i) => i * 2); // [0, 2, 4]"
+      ],
+      "hash": "00ab30f5d5771579403f71923c6a40cd290e2677f2c144c36df6efca23333680",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "Trie": {
+      "id": "dfr-9f9420fe",
+      "type": "helper",
+      "name": "Trie",
+      "file": "helpers/Trie/Trie.ts",
+      "description": "A prefix tree for fast word/prefix lookup — the classic structure behind autocomplete.",
+      "category": "data-structure",
+      "tags": [
+        "data-structure",
+        "trie",
+        "string",
+        "prefix"
+      ],
+      "usage": "low",
+      "examples": [
+        "const trie = new Trie();\ntrie.insert(\"cat\");\ntrie.has(\"cat\"); // true\ntrie.startsWith(\"ca\"); // true"
+      ],
+      "hash": "9f69c20d8b24284d3319985cc057d4eb8d6301c80a66b35805be38aed0440e07",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "unescape": {
+      "id": "dfr-649a7b00",
+      "type": "util",
+      "name": "unescape",
+      "file": "utils/unescape/unescape.ts",
+      "description": "Reverses {@link escape}: turns HTML entities back into their literal characters.",
+      "category": "string",
+      "tags": [
+        "string",
+        "html",
+        "unescape"
+      ],
+      "usage": "low",
+      "examples": [
+        "unescape(\"&lt;b&gt;Tom &amp; Jerry&lt;/b&gt;\"); // \"<b>Tom & Jerry</b>\""
+      ],
+      "hash": "bdde98236f16eec904448c1cd5c56da39408deada5077f336f8d9b4ad0fdd3df",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "unflattenObject": {
+      "id": "dfr-a865423b",
+      "type": "helper",
+      "name": "unflattenObject",
+      "file": "helpers/unflattenObject/unflattenObject.ts",
+      "description": "Rebuilds a nested object from dot-notation keys — the inverse of `flattenObject`.",
+      "category": "pattern",
+      "tags": [
+        "pattern",
+        "object",
+        "transform"
+      ],
+      "usage": "low",
+      "examples": [
+        "unflattenObject({ \"a.b\": 1, \"a.c.d\": 2 }); // { a: { b: 1, c: { d: 2 } } }"
+      ],
+      "hash": "6c9f6065e2b5421404029c53fe5b7f348f289485590bbb647b4d902342e6df9d",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "union": {
+      "id": "dfr-46768bd9",
+      "type": "util",
+      "name": "union",
+      "file": "utils/union/union.ts",
+      "description": "Merges arrays and removes duplicates, keeping first-seen order.",
+      "category": "array",
+      "tags": [
+        "array",
+        "merge",
+        "dedupe"
+      ],
+      "usage": "medium",
+      "examples": [
+        "union([1, 2], [2, 3], [3, 4]); // [1, 2, 3, 4]"
+      ],
+      "hash": "ed45080bebb75e85351cfc288649a55a6ba8ea26a7ee57ffaf87ebe87f88387a",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "UnionToIntersection": {
+      "id": "dfr-f3759e7c",
+      "type": "type",
+      "name": "UnionToIntersection",
+      "file": "types/UnionToIntersection/UnionToIntersection.ts",
+      "description": "Converts a union type into an intersection of its members.",
+      "category": "types",
+      "tags": [
+        "types",
+        "union",
+        "intersection",
+        "advanced"
+      ],
+      "usage": "low",
+      "examples": [
+        "type Combined = UnionToIntersection<{ a: string } | { b: number }>;\n// { a: string } & { b: number }"
+      ],
+      "hash": "0f0dd9048895fef169961fe2a8b5acc7b5dcf4e8b42d354f1ae0e1bc0f55d1c8",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "uniq": {
+      "id": "dfr-ac5f20e2",
+      "type": "util",
+      "name": "uniq",
+      "file": "utils/uniq/uniq.ts",
+      "description": "Removes duplicate values from an array, optionally by a derived key.",
+      "category": "array",
+      "tags": [
+        "array",
+        "filter",
+        "dedupe"
+      ],
+      "usage": "high",
+      "examples": [
+        "uniq([1, 2, 2, 3, 1]); // [1, 2, 3]"
+      ],
+      "hash": "22601f34474ecb021188fa8d8260e5b75e07c1741e2790ec6586953f763b0769",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "uniqueId": {
+      "id": "dfr-6419e00b",
+      "type": "util",
+      "name": "uniqueId",
+      "file": "utils/uniqueId/uniqueId.ts",
+      "description": "Generates a unique string id, optionally with a prefix. Backed by a per-process counter.",
+      "category": "utility",
+      "tags": [
+        "string",
+        "id",
+        "generate"
+      ],
+      "usage": "medium",
+      "examples": [],
+      "hash": "39f5b920918d3ce01d873906d7adcc2d765375bc14fab600954acbfa6ad33511",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "ValueOf": {
+      "id": "dfr-85f3e1e7",
+      "type": "type",
+      "name": "ValueOf",
+      "file": "types/ValueOf/ValueOf.ts",
+      "description": "The union of every value type in `T` — like `keyof T`, but for values.",
+      "category": "types",
+      "tags": [
+        "types",
+        "object",
+        "union"
+      ],
+      "usage": "low",
+      "examples": [
+        "type Status = ValueOf<{ ACTIVE: \"active\"; DONE: \"done\" }>;\n// \"active\" | \"done\""
+      ],
+      "hash": "f343699b196d29692938f0ceee6a155f3c7168a70f909c50847db3b3abe9da45",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "XOR": {
+      "id": "dfr-1b19f0ee",
+      "type": "type",
+      "name": "XOR",
+      "file": "types/XOR/XOR.ts",
+      "description": "Exclusive-or of two object types: allows the shape of `T` or the shape of `U`, but never a mix of both.",
+      "category": "types",
+      "tags": [
+        "types",
+        "object",
+        "union",
+        "advanced"
+      ],
+      "usage": "low",
+      "examples": [
+        "type ById = { id: string };\ntype ByName = { name: string };\ntype Lookup = XOR<ById, ByName>;\n// { id: string } | { name: string } — never both at once"
+      ],
+      "hash": "1f2c5a11a9d4a349c8405956045c991d6c75624ffd114398570ce835c181e3fa",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "zip": {
+      "id": "dfr-1bb7c74b",
+      "type": "util",
+      "name": "zip",
+      "file": "utils/zip/zip.ts",
+      "description": "Transposes a list of arrays: groups every array's i-th element together.",
+      "category": "array",
+      "tags": [
+        "array",
+        "transform",
+        "transpose"
+      ],
+      "usage": "low",
+      "examples": [
+        "zip([\"a\", \"b\"], [1, 2], [true, false]); // [[\"a\", 1, true], [\"b\", 2, false]]"
+      ],
+      "hash": "b3ba30484ecf39a759faa6c29be5ab0b8d03253ed8e8746bce6417b8a7eff8ba",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "zipObject": {
+      "id": "dfr-eda1b917",
+      "type": "util",
+      "name": "zipObject",
+      "file": "utils/zipObject/zipObject.ts",
+      "description": "Builds an object from parallel key/value arrays, or from `[key, value]` pairs.",
+      "category": "array",
+      "tags": [
+        "array",
+        "object",
+        "transform"
+      ],
+      "usage": "low",
+      "examples": [
+        "zipObject([\"a\", \"b\"], [1, 2]); // { a: 1, b: 2 }"
+      ],
+      "hash": "544285f8e3f3856fa76167a0c31e8a6b040bc528c6d36bda292792e76aac5187",
       "dependencies": {
         "npm": [],
         "internal": []

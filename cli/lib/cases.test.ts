@@ -10,6 +10,11 @@ test("toKebab splits camelCase and normalizes separators", () => {
   assert.equal(toKebab("group by"), "group-by");
 });
 
+test("toKebab splits an acronym from the word that follows it", () => {
+  assert.equal(toKebab("LRUCache"), "lru-cache");
+  assert.equal(toKebab("XMLHttpRequest"), "xml-http-request");
+});
+
 test("toCamel collapses separators", () => {
   assert.equal(toCamel("deep-merge"), "deepMerge");
   assert.equal(toCamel("group_by"), "groupBy");

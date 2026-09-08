@@ -128,18 +128,47 @@ explicit dependency graph. Where an `@example` is precise enough to run
 (`expr; // expected`), it's checked by `pnpm test` like any other test — a
 wrong example in the docs is a build failure, not just a typo.
 
-| Name | Category | Description |
-| --- | --- | --- |
-| `intersection` | array | Values common to every passed array |
-| `pull` | array | Removes every occurrence of the given values |
-| `chunk` | array | Splits an array into chunks of a given size |
-| `groupBy` | array | Groups items into a record keyed by a selector |
-| `clamp` | number | Restricts a number to an inclusive range |
-| `debounce` | function | Wraps a function to only run after N ms of silence |
-| `sleep` | async | Promise that resolves after a delay |
-| `DeepPartial` | types | Recursively makes every property optional |
-| `Prettify` | types | Flattens an intersection type for cleaner hovers |
-| `PartialBy` | types | Makes the given keys of a type optional |
+88 items: the runtime utils are most of the classic underscore.js set, the
+types are most of the well-known "TypeScript utility types" (the type-fest /
+utility-types canon), and the helpers are popular algorithms, data structures
+and patterns — the ones people reach for or reimplement constantly. All three
+skip whatever's already native: native JS methods for the utils,
+`structuredClone`/`crypto.randomUUID`/etc. for the helpers, TS's own
+`Partial`/`Pick`/`Omit`/`Record`/… for the types.
+
+**array** — `first`, `last`, `initial`, `rest`, `compact`, `uniq`, `union`,
+`difference`, `intersection`, `pull`, `chunk`, `range`, `zip`, `zipObject`,
+`sample`, `shuffle`
+
+**collection** — `groupBy`, `countBy`, `partition`, `pluck`
+
+**function** — `once`, `after`, `memoize`, `negate`, `partial`, `compose`,
+`debounce`
+
+**object** — `pick`, `omit`, `defaults`, `invert`, `isEqual`, `isEmpty`
+
+**utility** — `identity`, `constant`, `noop`, `times`, `random`, `uniqueId`
+
+**string** — `escape`, `unescape`
+
+**number** — `clamp`
+
+**async** — `sleep`
+
+**data-structure** — `Stack`, `Queue`, `LinkedList`, `PriorityQueue`,
+`LRUCache`, `Trie`
+
+**algorithm** — `binarySearch`, `quickSort`, `mergeSort`, `bfs`, `dfs`,
+`levenshteinDistance`, `gcd`, `lcm`, `isPrime`, `fibonacci`
+
+**pattern** — `EventEmitter`, `retry`, `deepMerge`, `get`, `set`,
+`flattenObject`, `unflattenObject`, `StateMachine`
+
+**types** (TS-only, no runtime) — `DeepPartial`, `DeepRequired`, `PartialBy`,
+`RequiredBy`, `RequireAtLeastOne`, `Prettify`, `Mutable`, `DeepMutable`,
+`DeepReadonly`, `Nullable`, `ValueOf`, `Entries`, `UnionToIntersection`,
+`Merge`, `XOR`, `PartialRecord`, `ArrayElement`, `Brand`, `LiteralUnion`,
+`JsonValue`, `DistributiveOmit`
 
 ## Development
 

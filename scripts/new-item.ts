@@ -12,12 +12,17 @@ import type { ItemType } from "../cli/types.ts";
 const FOLDER: Record<ItemType, string> = { util: "utils", helper: "helpers", type: "types" };
 const CASING: Record<ItemType, RegExp> = {
   util: /^[a-z][A-Za-z0-9]*$/,
-  helper: /^[a-z][A-Za-z0-9]*$/,
+  // helpers can be a function (camelCase, e.g. binarySearch) or a class
+  // (PascalCase, e.g. LRUCache) — both are common for algorithms/patterns.
+  helper: /^[A-Za-z][A-Za-z0-9]*$/,
   type: /^[A-Z][A-Za-z0-9]*$/,
 };
 
 function implTemplate(name: string, type: ItemType, header: string): string {
   if (type === "type") return `${header}export type ${name}<T> = T;\n`;
+  if (type === "helper" && /^[A-Z]/.test(name)) {
+    return `${header}export class ${name} {\n  // TODO: implement\n}\n`;
+  }
   return `${header}export function ${name}() {\n  // TODO: implement\n}\n`;
 }
 
@@ -28,6 +33,17 @@ function testTemplate(name: string, type: ItemType): string {
 // Compile-only check — a bad type here fails \`pnpm lint\`, not \`pnpm test\`.
 type _Check = ${name}<unknown>;
 void (0 as unknown as _Check);
+`;
+  }
+  if (type === "helper" && /^[A-Z]/.test(name)) {
+    return `import assert from "node:assert/strict";
+import { test } from "node:test";
+
+import { ${name} } from "./${name}.ts";
+
+test("TODO", () => {
+  assert.ok(new ${name}());
+});
 `;
   }
   return `import assert from "node:assert/strict";
@@ -61,7 +77,7 @@ async function main() {
       message: "Kind?",
       options: [
         { value: "util", label: "util", hint: "a runtime function" },
-        { value: "helper", label: "helper", hint: "shared building block for utils" },
+        { value: "helper", label: "helper", hint: "algorithm, data structure or pattern (camelCase fn or PascalCase class)" },
         { value: "type", label: "type", hint: "pure TS type, no runtime code" },
       ],
     });

@@ -18,7 +18,8 @@ raw source files it points at.
 src/
   utils/<name>/<name>.ts        # the utility (single implementation file)
   utils/<name>/<name>.test.ts   # co-located test
-  helpers/<name>/<name>.ts      # shared building blocks utils may depend on
+  helpers/<name>/<name>.ts      # standalone algorithms, data structures, patterns
+                                 # (camelCase fn or PascalCase class per <name>)
   types/<name>/<name>.ts        # pure TS types (interfaces/type aliases, no runtime code)
 cli/
   index.ts                                       # arg parsing + command dispatch
@@ -123,6 +124,17 @@ walks that graph: it pulls in transitive `internal` items in topological order
 cycle. `installer.rewriteImports()` then rewrites the `@/…` specifiers to the
 consumer's configured aliases so the copied file compiles in their project.
 
+**Known gap:** `@/utils/*` etc. resolve at *TypeScript-check* time (via
+`tsconfig.json`'s `paths`) and get parsed at *registry-build* time
+(`extractDependencies`), but Node's native runtime has no path-mapping — so a
+file that actually uses this alias will pass `pnpm lint` yet crash with
+`ERR_MODULE_NOT_FOUND` under plain `pnpm test`, since nothing in this repo
+resolves `@/*` at runtime. No current catalog item uses a real cross-item
+import (all 46 are self-contained) precisely to sidestep this; wiring up a
+loader (or switching the convention to a real bare specifier) is unsolved.
+Don't add an internal import without solving this first — verify with
+`node --test src/utils/<name>/<name>.test.ts` directly, not just `tsc`.
+
 ## Consumer config — `dufresne.json`
 
 `dufresne init` writes it; `dufresne add` reads it. It controls where files land
@@ -196,6 +208,15 @@ the whole batch over one typo.
   is zero false positives, not 100% coverage of every example. A richer
   "docs" surface could still pull the public type signature via the TS
   compiler API (reactuse does this for its docs site).
+- **`helper` scope.** Originally meant only as "shared building blocks utils
+  depend on" (still unused for that — see the cross-import gap above), it now
+  also covers standalone algorithms/data-structures/patterns consumers `add`
+  directly. Either casing is valid for `<name>`: camelCase for a function
+  (`binarySearch`), PascalCase for a class (`LRUCache`) — `pnpm new` picks the
+  right template from the casing. `toKebab()` ([cli/lib/cases.ts](cli/lib/cases.ts))
+  handles acronym-style names correctly (`LRUCache` → `lru-cache`, not
+  `lrucache`) via a dedicated acronym-boundary pass before the usual
+  camelCase-boundary one.
 - **`util` / `helper` / `type`** cover the current kinds; a fourth would
   follow the same recipe: a folder in `TYPE_DIRS`
   ([scripts/build-registry.ts](scripts/build-registry.ts)), a `paths`/`aliases`
