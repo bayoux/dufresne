@@ -45,10 +45,11 @@ jobs:
       - name: Build
         run: pnpm run build
 
-      - name: Create .npmrc
-        run: echo "//registry.npmjs.org/:_authToken=\${NODE_AUTH_TOKEN}" > .npmrc
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+      # Trusted Publishing (OIDC) — no npm token needed. Requires:
+      #  - a Trusted Publisher configured for this package on npmjs.com
+      #    (org/user + repo + workflow filename = publish.yml)
+      #  - `id-token: write` above, npm CLI >= 11.5.1, Node >= 22.14.0
+      # pnpm doesn't implement the OIDC exchange yet (pnpm/pnpm#9812), so the
+      # actual publish has to go through the real npm CLI.
       - name: Publish to npm
-        run: pnpm publish --no-git-checks --provenance --access public
+        run: npm publish --provenance --access public
