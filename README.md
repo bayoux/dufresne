@@ -44,17 +44,21 @@ Run `dufresne --help` for the full list.
 
 `dufresne init` writes `dufresne.json` to the project root. `add` reads it to
 decide where files go and how imports are rewritten; without one it falls back
-to sane defaults (`./utils`, `./lib`).
+to sane defaults (`./utils`, `./lib`, `./types`).
 
 ```jsonc
 {
   "ts": true,
   "case": "kebab",                                // deep-merge.ts vs deepMerge.ts
   "barrel": true,                                  // maintain an index.ts re-export
-  "aliases": { "utils": "@/utils", "helpers": "@/lib" },
-  "paths":   { "utils": "src/utils", "helpers": "src/lib" }
+  "aliases": { "utils": "@/utils", "helpers": "@/lib", "types": "@/types" },
+  "paths":   { "utils": "src/utils", "helpers": "src/lib", "types": "src/types" }
 }
 ```
+
+Utils and helpers install as regular code; type-only items (see below) get
+their own `types` path/alias and are always written as `.ts`, since a type has
+no JavaScript form.
 
 ## Available utilities
 

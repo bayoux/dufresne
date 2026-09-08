@@ -10,7 +10,7 @@ const OUT = join(ROOT, "registry.json");
 const BASE_URL = "https://raw.githubusercontent.com/bayoux/dufresne/main/src";
 
 /** Top-level folder under src/ -> item type. */
-const TYPE_DIRS: Record<string, ItemType> = { utils: "util", helpers: "helper" };
+const TYPE_DIRS: Record<string, ItemType> = { utils: "util", helpers: "helper", types: "type" };
 
 function findImpl(dir: string, name: string): string | null {
   for (const ext of [".ts", ".tsx"]) {

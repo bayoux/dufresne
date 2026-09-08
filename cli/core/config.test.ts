@@ -7,9 +7,17 @@ test("normalizeConfig fills every field from a partial object", () => {
   const cfg = normalizeConfig({ aliases: { utils: "~/u" } });
   assert.equal(cfg.aliases.utils, "~/u");
   assert.equal(cfg.aliases.helpers, DEFAULT_CONFIG.aliases.helpers);
+  assert.equal(cfg.aliases.types, DEFAULT_CONFIG.aliases.types);
+  assert.equal(cfg.paths.types, DEFAULT_CONFIG.paths.types);
   assert.equal(cfg.ts, true);
   assert.equal(cfg.case, "kebab");
   assert.equal(cfg.barrel, true);
+});
+
+test("normalizeConfig respects an explicit types path and alias", () => {
+  const cfg = normalizeConfig({ paths: { types: "src/types" }, aliases: { types: "@/types" } });
+  assert.equal(cfg.paths.types, "src/types");
+  assert.equal(cfg.aliases.types, "@/types");
 });
 
 test("normalizeConfig respects explicit false and camel case", () => {

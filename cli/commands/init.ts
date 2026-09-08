@@ -50,6 +50,18 @@ export async function init(): Promise<void> {
           placeholder: DEFAULT_CONFIG.aliases.helpers,
           defaultValue: DEFAULT_CONFIG.aliases.helpers,
         }),
+      typesPath: () =>
+        p.text({
+          message: "Where should type-only utilities be written?",
+          placeholder: DEFAULT_CONFIG.paths.types,
+          defaultValue: DEFAULT_CONFIG.paths.types,
+        }),
+      typesAlias: () =>
+        p.text({
+          message: "Import alias for type-only utilities?",
+          placeholder: DEFAULT_CONFIG.aliases.types,
+          defaultValue: DEFAULT_CONFIG.aliases.types,
+        }),
       caseStyle: () =>
         p.select({
           message: "Filename casing?",
@@ -74,8 +86,8 @@ export async function init(): Promise<void> {
     ts: answers.ts,
     case: answers.caseStyle as CaseStyle,
     barrel: answers.barrel,
-    aliases: { utils: answers.utilsAlias, helpers: answers.helpersAlias },
-    paths: { utils: answers.utilsPath, helpers: answers.helpersPath },
+    aliases: { utils: answers.utilsAlias, helpers: answers.helpersAlias, types: answers.typesAlias },
+    paths: { utils: answers.utilsPath, helpers: answers.helpersPath, types: answers.typesPath },
   };
 
   const file = writeConfig(cwd, config);

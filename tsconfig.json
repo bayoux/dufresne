@@ -25,7 +25,8 @@
     // Convention: `import { x } from '@/utils/x/x'` (folder-per-item).
     "paths": {
       "@/utils/*": ["./src/utils/*"],
-      "@/helpers/*": ["./src/helpers/*"]
+      "@/helpers/*": ["./src/helpers/*"],
+      "@/types/*": ["./src/types/*"]
     }
   },
   "include": ["cli/**/*.ts", "scripts/**/*.ts", "src/**/*.ts", "tsdown.config.ts"]

@@ -55,10 +55,11 @@ test("extractDependencies classifies imports", () => {
      import { z } from 'zod/v4';
      import { compact } from '@/utils/compact/compact';
      import { toArray } from '@/helpers/to-array/to-array';
+     import type { Prettify } from '@/types/Prettify/Prettify';
      import { local } from './local';`,
   );
   assert.deepEqual(deps.npm, ["dayjs", "zod"]);
-  assert.deepEqual(deps.internal, ["compact", "to-array"]);
+  assert.deepEqual(deps.internal, ["Prettify", "compact", "to-array"]);
 });
 
 test("extractDependencies ignores react and node builtins", () => {

@@ -68,10 +68,10 @@
       }
     },
     "DeepPartial": {
-      "id": "dfr-31570988",
-      "type": "util",
+      "id": "dfr-464f9f79",
+      "type": "type",
       "name": "DeepPartial",
-      "file": "utils/DeepPartial/DeepPartial.ts",
+      "file": "types/DeepPartial/DeepPartial.ts",
       "description": "Recursively makes every property of `T` (including nested",
       "category": "types",
       "tags": [
@@ -134,10 +134,10 @@
       }
     },
     "PartialBy": {
-      "id": "dfr-e3cff5e7",
-      "type": "util",
+      "id": "dfr-4ac3c04b",
+      "type": "type",
       "name": "PartialBy",
-      "file": "utils/PartialBy/PartialBy.ts",
+      "file": "types/PartialBy/PartialBy.ts",
       "description": "Makes the given keys of `T` optional while leaving the rest",
       "category": "types",
       "tags": [
@@ -156,10 +156,10 @@
       }
     },
     "Prettify": {
-      "id": "dfr-e2b96cd3",
-      "type": "util",
+      "id": "dfr-753c2283",
+      "type": "type",
       "name": "Prettify",
-      "file": "utils/Prettify/Prettify.ts",
+      "file": "types/Prettify/Prettify.ts",
       "description": "Flattens an intersection type into a single object type, so",
       "category": "types",
       "tags": [

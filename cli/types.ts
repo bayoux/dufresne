@@ -1,4 +1,4 @@
-export type ItemType = "util" | "helper";
+export type ItemType = "util" | "helper" | "type";
 
 export type CaseStyle = "kebab" | "camel";
 
@@ -24,7 +24,7 @@ export interface RegistryItem {
   dependencies: {
     /** npm packages the source imports. */
     npm: string[];
-    /** Other registry item names the source imports via `@/utils/*` or `@/helpers/*`. */
+    /** Other registry item names the source imports via `@/utils/*`, `@/helpers/*` or `@/types/*`. */
     internal: string[];
   };
 }
@@ -45,8 +45,8 @@ export interface Config {
   case: CaseStyle;
   /** Append `export * from ...` to an `index` barrel in the target dir. */
   barrel: boolean;
-  /** Import specifiers that `@/utils/*` and `@/helpers/*` are rewritten to. */
-  aliases: { utils: string; helpers: string };
+  /** Import specifiers that `@/utils/*`, `@/helpers/*` and `@/types/*` are rewritten to. */
+  aliases: { utils: string; helpers: string; types: string };
   /** On-disk destinations, relative to the project root. */
-  paths: { utils: string; helpers: string };
+  paths: { utils: string; helpers: string; types: string };
 }

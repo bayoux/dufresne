@@ -2,9 +2,15 @@ import fs from "node:fs";
 import path from "node:path";
 
 import { applyCase } from "../lib/cases.ts";
-import type { Config, RegistryItem } from "../types.ts";
+import type { Config, ItemType, RegistryItem } from "../types.ts";
 
 const ALLOWED_EXT = new Set([".ts", ".tsx", ".js", ".jsx"]);
+
+const PATH_KEY: Record<ItemType, keyof Config["paths"]> = {
+  util: "utils",
+  helper: "helpers",
+  type: "types",
+};
 
 export interface TargetInfo {
   ext: string;
@@ -12,34 +18,34 @@ export interface TargetInfo {
   dir: string;
   filePath: string;
   barrelPath: string;
+  isTypeOnly: boolean;
 }
 
 export function targetInfo(item: RegistryItem, config: Config, cwd: string): TargetInfo {
-  const ext = config.ts ? (item.file.endsWith(".tsx") ? ".tsx" : ".ts") : ".js";
+  // Type-only items have no JS representation — they're always .ts, regardless
+  // of the consumer's `ts` setting.
+  const ext =
+    item.type === "type" ? ".ts" : config.ts ? (item.file.endsWith(".tsx") ? ".tsx" : ".ts") : ".js";
   const base = applyCase(item.name, config.case);
-  const dir = path.join(cwd, config.paths[item.type === "helper" ? "helpers" : "utils"]);
+  const dir = path.join(cwd, config.paths[PATH_KEY[item.type]]);
 
   return {
     ext,
     base,
     dir,
     filePath: path.join(dir, `${base}${ext}`),
-    barrelPath: path.join(dir, `index${config.ts ? ".ts" : ".js"}`),
+    barrelPath: path.join(dir, `index${ext}`),
+    isTypeOnly: item.type === "type",
   };
 }
 
-/** Rewrites `@/utils/<name>` / `@/helpers/<name>` imports to the consumer's aliases. */
+/** Rewrites `@/utils/<name>`, `@/helpers/<name>` and `@/types/<name>` imports to the consumer's aliases. */
 export function rewriteImports(content: string, config: Config): string {
-  return content
-    .replace(
-      /(['"])@\/utils\/([\w-]+)(?:\/[\w-]+)?\1/g,
-      (_m, q: string, name: string) => `${q}${config.aliases.utils}/${applyCase(name, config.case)}${q}`,
-    )
-    .replace(
-      /(['"])@\/helpers\/([\w-]+)(?:\/[\w-]+)?\1/g,
-      (_m, q: string, name: string) =>
-        `${q}${config.aliases.helpers}/${applyCase(name, config.case)}${q}`,
-    );
+  return content.replace(
+    /(['"])@\/(utils|helpers|types)\/([\w-]+)(?:\/[\w-]+)?\1/g,
+    (_m, q: string, group: string, name: string) =>
+      `${q}${config.aliases[group as keyof Config["aliases"]]}/${applyCase(name, config.case)}${q}`,
+  );
 }
 
 export function assertAllowed(filePath: string): void {
@@ -56,7 +62,8 @@ export function writeItemFile(target: TargetInfo, content: string): void {
 }
 
 export function appendBarrel(target: TargetInfo): void {
-  const line = `export * from './${target.base}';\n`;
+  const exportKind = target.isTypeOnly ? "export type" : "export";
+  const line = `${exportKind} * from './${target.base}';\n`;
 
   if (!fs.existsSync(target.barrelPath)) {
     fs.writeFileSync(target.barrelPath, line, "utf-8");

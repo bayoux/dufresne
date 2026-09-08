@@ -19,6 +19,7 @@ src/
   utils/<name>/<name>.ts        # the utility (single implementation file)
   utils/<name>/<name>.test.ts   # co-located test
   helpers/<name>/<name>.ts      # shared building blocks utils may depend on
+  types/<name>/<name>.ts        # pure TS types (interfaces/type aliases, no runtime code)
 cli/
   index.ts                        # arg parsing + command dispatch
   commands/{add,list,init,info}.ts  # one file per command
@@ -61,11 +62,15 @@ scripts/
    runtime test.
 3. `pnpm registry` regenerates `registry.json`.
 
-Pure TypeScript utility types (`DeepPartial`, `Prettify`, …) live under
-`src/utils/` too, tagged `category: "types"` — they install to the same
-`utils/` target as functions. There's no separate `ItemType` for them; adding
-one would mean a third install path/alias in every config, for what is really
-just a different `category`.
+Pure TypeScript utility types (`DeepPartial`, `Prettify`, …) get their own
+`ItemType` — `"type"` — and their own folder, `src/types/<name>/`, install
+path (`paths.types`), import alias (`aliases.types`), and `@/types/<name>`
+import prefix. They're kept out of `utils/` on purpose: a consumer without
+TypeScript can't use them at all, and a type has no runtime footprint to mix
+with actual function calls. `targetInfo()` forces `.ts` for a type item
+regardless of the consumer's `ts` setting (there's no other sensible
+representation), and `appendBarrel()` emits `export type * from …` for them
+instead of a plain `export *`.
 
 That's it — no central index to edit. `pnpm test` picks the test up
 automatically (`node --test` globs `**/*.test.ts`).
@@ -85,12 +90,14 @@ Import another catalog item by alias — **never** by relative path:
 ```ts
 import { compact } from "@/utils/compact/compact";
 import { toArray } from "@/helpers/to-array/to-array";
+import type { Prettify } from "@/types/Prettify/Prettify";
 ```
 
 `extractDependencies()` ([cli/lib/metadata.ts](cli/lib/metadata.ts)) reads these
 at registry-build time:
 
-- `@/utils/*` / `@/helpers/*` → `dependencies.internal` (other registry items)
+- `@/utils/*` / `@/helpers/*` / `@/types/*` → `dependencies.internal` (other
+  registry items)
 - any other bare specifier (not `node:`, not `react`) → `dependencies.npm`
 
 At `add` time, `resolveDependencies()` ([cli/core/registry.ts](cli/core/registry.ts))
@@ -109,8 +116,8 @@ consumer's configured aliases so the copied file compiles in their project.
   "ts": true,
   "case": "kebab",                              // deep-merge.ts vs deepMerge.ts
   "barrel": true,                               // maintain index.ts re-exports
-  "aliases": { "utils": "@/utils", "helpers": "@/lib" },
-  "paths":   { "utils": "src/utils", "helpers": "src/lib" }
+  "aliases": { "utils": "@/utils", "helpers": "@/lib", "types": "@/types" },
+  "paths":   { "utils": "src/utils", "helpers": "src/lib", "types": "src/types" }
 }
 ```
 
@@ -127,6 +134,7 @@ consumer's configured aliases so the copied file compiles in their project.
   `dufresne info <name>`; that command is the whole "docs" surface for now. A
   richer version could pull the public type signature via the TS compiler API
   (reactuse does this for its docs site).
-- **`helper` vs `util`** is the only type axis; add another top-level folder in
-  `TYPE_DIRS` ([scripts/build-registry.ts](scripts/build-registry.ts)) and a
-  matching `paths`/`aliases` key to introduce a third kind.
+- **`util` / `helper` / `type`** cover the current kinds; a fourth would
+  follow the same recipe: a folder in `TYPE_DIRS`
+  ([scripts/build-registry.ts](scripts/build-registry.ts)), a `paths`/`aliases`
+  key on `Config`, and a case in `installer.targetInfo()`'s `PATH_KEY` map.

@@ -9,8 +9,8 @@ export const DEFAULT_CONFIG: Config = {
   ts: true,
   case: "kebab",
   barrel: true,
-  aliases: { utils: "./utils", helpers: "./lib" },
-  paths: { utils: "utils", helpers: "lib" },
+  aliases: { utils: "./utils", helpers: "./lib", types: "./types" },
+  paths: { utils: "utils", helpers: "lib", types: "types" },
 };
 
 export function configPath(cwd: string): string {
@@ -57,10 +57,12 @@ export function normalizeConfig(raw: unknown): Config {
       utils: typeof aliases.utils === "string" ? aliases.utils : DEFAULT_CONFIG.aliases.utils,
       helpers:
         typeof aliases.helpers === "string" ? aliases.helpers : DEFAULT_CONFIG.aliases.helpers,
+      types: typeof aliases.types === "string" ? aliases.types : DEFAULT_CONFIG.aliases.types,
     },
     paths: {
       utils: typeof paths.utils === "string" ? paths.utils : DEFAULT_CONFIG.paths.utils,
       helpers: typeof paths.helpers === "string" ? paths.helpers : DEFAULT_CONFIG.paths.helpers,
+      types: typeof paths.types === "string" ? paths.types : DEFAULT_CONFIG.paths.types,
     },
   };
 }

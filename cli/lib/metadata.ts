@@ -64,9 +64,11 @@ const BUILTINS = new Set(builtinModules);
 const IMPORT_RE =
   /(?:import|export)\s+(?:type\s+)?(?:[\w*{}\n,\s]+?\s+from\s+)?['"]([^'"]+)['"]/g;
 
+const INTERNAL_PREFIXES = ["@/utils/", "@/helpers/", "@/types/"];
+
 /**
  * Derives an item's dependency graph from its import statements.
- * - `@/utils/<name>` / `@/helpers/<name>` -> internal registry items
+ * - `@/utils/<name>` / `@/helpers/<name>` / `@/types/<name>` -> internal registry items
  * - bare specifiers (not `node:`, not ignored) -> npm packages
  * - relative specifiers -> ignored (items must be single-file)
  */
@@ -77,7 +79,7 @@ export function extractDependencies(content: string): { npm: string[]; internal:
   for (const match of content.matchAll(IMPORT_RE)) {
     const spec = match[1]!;
 
-    if (spec.startsWith("@/utils/") || spec.startsWith("@/helpers/")) {
+    if (INTERNAL_PREFIXES.some((prefix) => spec.startsWith(prefix))) {
       const name = spec.split("/")[2];
       if (name) internal.add(name);
       continue;
