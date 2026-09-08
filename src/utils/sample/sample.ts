@@ -1,3 +1,5 @@
+import { shuffle } from "#utils/shuffle/shuffle";
+
 /**
  * @name sample
  * @description Picks one random element from an array, or `n` distinct random elements.
@@ -16,14 +18,5 @@ export function sample<T>(arr: T[], n?: number): T | T[] | undefined {
     return arr[Math.floor(Math.random() * arr.length)];
   }
 
-  const pool = arr.slice();
-  const count = Math.min(Math.max(0, n), pool.length);
-  const result: T[] = [];
-
-  for (let i = 0; i < count; i++) {
-    const index = Math.floor(Math.random() * pool.length);
-    result.push(pool.splice(index, 1)[0] as T);
-  }
-
-  return result;
+  return shuffle(arr).slice(0, Math.max(0, n));
 }

@@ -24,11 +24,11 @@ const config: Config = {
   paths: { utils: "app/utils", helpers: "app/lib", types: "app/types" },
 };
 
-test("rewriteImports maps @/utils, @/helpers and @/types to consumer aliases", () => {
+test("rewriteImports maps #utils, #helpers and #types to consumer aliases", () => {
   const out = rewriteImports(
-    `import { compact } from '@/utils/compact/compact';
-     import { toArray } from '@/helpers/toArray/toArray';
-     import type { DeepPartial } from '@/types/DeepPartial/DeepPartial';`,
+    `import { compact } from '#utils/compact/compact';
+     import { toArray } from '#helpers/toArray/toArray';
+     import type { DeepPartial } from '#types/DeepPartial/DeepPartial';`,
     config,
   );
   assert.match(out, /from '~\/utils\/compact'/);

@@ -24,7 +24,7 @@ export interface RegistryItem {
   dependencies: {
     /** npm packages the source imports. */
     npm: string[];
-    /** Other registry item names the source imports via `@/utils/*`, `@/helpers/*` or `@/types/*`. */
+    /** Other registry item names the source imports via `#utils/*`, `#helpers/*` or `#types/*`. */
     internal: string[];
   };
 }
@@ -47,7 +47,7 @@ export interface Config {
   barrel: boolean;
   /** Keep the JSDoc header/comments in added files (`false` strips them). */
   comments: boolean;
-  /** Import specifiers that `@/utils/*`, `@/helpers/*` and `@/types/*` are rewritten to. */
+  /** Import specifiers that `#utils/*`, `#helpers/*` and `#types/*` are rewritten to. */
   aliases: { utils: string; helpers: string; types: string };
   /** On-disk destinations, relative to the project root. */
   paths: { utils: string; helpers: string; types: string };

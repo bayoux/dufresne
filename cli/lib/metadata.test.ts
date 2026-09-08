@@ -53,9 +53,9 @@ test("extractDependencies classifies imports", () => {
     `import { readFileSync } from 'node:fs';
      import dayjs from 'dayjs';
      import { z } from 'zod/v4';
-     import { compact } from '@/utils/compact/compact';
-     import { toArray } from '@/helpers/to-array/to-array';
-     import type { Prettify } from '@/types/Prettify/Prettify';
+     import { compact } from '#utils/compact/compact';
+     import { toArray } from '#helpers/to-array/to-array';
+     import type { Prettify } from '#types/Prettify/Prettify';
      import { local } from './local';`,
   );
   assert.deepEqual(deps.npm, ["dayjs", "zod"]);

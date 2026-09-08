@@ -876,10 +876,12 @@
       "examples": [
         "lcm(4, 6); // 12"
       ],
-      "hash": "23e337e42732eb994ade71b72a57971b6999ee0eb5ffc30a8a1e6dcb5406e571",
+      "hash": "e94f06ecc1f16cbf7fa6a8c7279b8774f26c1127d9db11a0605fd57d2c26a512",
       "dependencies": {
         "npm": [],
-        "internal": []
+        "internal": [
+          "gcd"
+        ]
       }
     },
     "levenshteinDistance": {
@@ -1272,6 +1274,27 @@
         "internal": []
       }
     },
+    "pipe": {
+      "id": "dfr-f203afc7",
+      "type": "util",
+      "name": "pipe",
+      "file": "utils/pipe/pipe.ts",
+      "description": "Composes functions left to right: the first one runs first, each result feeding the next. The mirror image of `compose`.",
+      "category": "function",
+      "tags": [
+        "function",
+        "pipeline"
+      ],
+      "usage": "medium",
+      "examples": [
+        "const shout = pipe((s: string) => s.toUpperCase(), (s: string) => s + \"!\");\nshout(\"hi\"); // \"HI!\""
+      ],
+      "hash": "ba49b7b62f7e1d2339ac30aceaa8f7b2d316a3d85a95723e7facffd102bab9be",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
     "pluck": {
       "id": "dfr-391d5296",
       "type": "util",
@@ -1546,10 +1569,12 @@
       ],
       "usage": "low",
       "examples": [],
-      "hash": "751670d5d567784dc57d1b678f6ac7d1dbcecff4d1dc2cc70b818d32f94286b3",
+      "hash": "2ca7d1d1ebdca872478de286089c7841d050c25869a502bb3b73f28fc83e6885",
       "dependencies": {
         "npm": [],
-        "internal": []
+        "internal": [
+          "shuffle"
+        ]
       }
     },
     "set": {
@@ -1654,6 +1679,28 @@
         "const light = new StateMachine(\"red\", { red: { go: \"green\" }, green: { stop: \"red\" } });\nlight.send(\"go\");\nlight.state; // \"green\""
       ],
       "hash": "dd06a50091bd03117e47e171755bc7ec7f9a4caafecdf2f1cdf26dbc55ba5287",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "throttle": {
+      "id": "dfr-780de560",
+      "type": "util",
+      "name": "throttle",
+      "file": "utils/throttle/throttle.ts",
+      "description": "Wraps a function so it runs at most once per `wait` ms — immediately on the leading call, then once more on the trailing edge if calls kept coming in.",
+      "category": "function",
+      "tags": [
+        "function",
+        "timing",
+        "performance"
+      ],
+      "usage": "high",
+      "examples": [
+        "const onScroll = throttle(() => console.log(\"scrolled\"), 200);\nwindow.addEventListener(\"scroll\", onScroll);"
+      ],
+      "hash": "7c601562af002ddf1c656c8b027b6c44a12f2ea89b69a780fb6a3ad0216cd9b6",
       "dependencies": {
         "npm": [],
         "internal": []

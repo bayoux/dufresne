@@ -19,15 +19,13 @@
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
-    "forceConsistentCasingInFileNames": true,
+    "forceConsistentCasingInFileNames": true
 
-    // Alias used inside published item sources; resolved/rewritten by the CLI.
-    // Convention: `import { x } from '@/utils/x/x'` (folder-per-item).
-    "paths": {
-      "@/utils/*": ["./src/utils/*"],
-      "@/helpers/*": ["./src/helpers/*"],
-      "@/types/*": ["./src/types/*"]
-    }
+    // Aliases for cross-item imports inside published item sources
+    // (`import { x } from '#utils/x/x'`) come from package.json's `imports`
+    // field, not from `paths` here — nodenext resolves both the same way
+    // Node does at runtime, so there's one source of truth instead of two
+    // that can drift.
   },
   "include": ["cli/**/*.ts", "scripts/**/*.ts", "src/**/*.ts", "tsdown.config.ts"]
 }

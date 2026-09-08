@@ -10,6 +10,11 @@
   "engines": {
     "node": ">=22.18"
   },
+  "imports": {
+    "#utils/*": "./src/utils/*.ts",
+    "#helpers/*": "./src/helpers/*.ts",
+    "#types/*": "./src/types/*.ts"
+  },
   "scripts": {
     "new": "node scripts/new-item.ts",
     "registry": "node scripts/build-registry.ts",

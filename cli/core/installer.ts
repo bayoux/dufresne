@@ -44,10 +44,10 @@ export function targetInfo(item: RegistryItem, config: Config, cwd: string): Tar
   };
 }
 
-/** Rewrites `@/utils/<name>`, `@/helpers/<name>` and `@/types/<name>` imports to the consumer's aliases. */
+/** Rewrites `#utils/<name>`, `#helpers/<name>` and `#types/<name>` imports to the consumer's aliases. */
 export function rewriteImports(content: string, config: Config): string {
   return content.replace(
-    /(['"])@\/(utils|helpers|types)\/([\w-]+)(?:\/[\w-]+)?\1/g,
+    /(['"])#(utils|helpers|types)\/([\w-]+)(?:\/[\w-]+)?\1/g,
     (_m, q: string, group: string, name: string) =>
       `${q}${config.aliases[group as keyof Config["aliases"]]}/${applyCase(name, config.case)}${q}`,
   );
