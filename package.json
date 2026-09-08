@@ -1,6 +1,6 @@
 {
   "name": "dufresne",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Copy small, dependency-free TypeScript utilities, algorithms, data structures and types straight into your project instead of installing a package for them — shadcn/ui, applied to code.",
   "bin": {
     "dufresne": "./dist/index.js"
