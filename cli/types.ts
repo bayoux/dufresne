@@ -45,6 +45,8 @@ export interface Config {
   case: CaseStyle;
   /** Append `export * from ...` to an `index` barrel in the target dir. */
   barrel: boolean;
+  /** Keep the JSDoc header/comments in added files (`false` strips them). */
+  comments: boolean;
   /** Import specifiers that `@/utils/*`, `@/helpers/*` and `@/types/*` are rewritten to. */
   aliases: { utils: string; helpers: string; types: string };
   /** On-disk destinations, relative to the project root. */

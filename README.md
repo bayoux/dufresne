@@ -8,8 +8,9 @@ as shadcn/ui, applied to plain functions.
 npx dufresne add intersection
 ```
 
-That downloads `intersection.ts` into `./utils` and wires up an `index.ts`
-barrel export — no runtime dependency added to your project.
+That downloads `intersection.ts` into your utils folder (detected from your
+`tsconfig.json` paths, e.g. `src/utils`) and wires up an `index.ts` barrel
+export — no runtime dependency added to your project.
 
 ## Why
 
@@ -35,24 +36,31 @@ npx dufresne add [items...]   # add items (interactive picker if none given)
 | --- | --- |
 | `-a, --all` | add every item in the registry |
 | `-o, --overwrite` | overwrite existing files without asking |
+| `--jsdoc` / `--no-jsdoc` | force-keep or strip the JSDoc header in added files (default: follow config) |
 | `--cwd <dir>` | target project directory (default: `.`) |
 | `--registry <url\|path>` | use a different registry (a local path also reads sources from its sibling `src/`) |
 
-Run `dufresne --help` for the full list.
+The picker is a type-to-filter search (`dufresne add` with no arguments), sources
+are fetched in parallel, and a file whose content already matches is reported as
+`unchanged` instead of prompting. Run `dufresne --help` for the full list.
 
 ## Configuration
 
-`dufresne init` writes `dufresne.json` to the project root. `add` reads it to
-decide where files go and how imports are rewritten; without one it falls back
-to sane defaults (`./utils`, `./lib`, `./types`).
+`dufresne init` writes `dufresne.json` to the project root, **pre-filling every
+answer from your own `tsconfig.json` / `jsconfig.json` path aliases**. `add`
+reads that file to decide where code goes and how imports are rewritten; without
+one it applies the same detection on the fly (so `@/*` → `src/*` projects get
+`@/utils` → `src/utils` for free) and falls back to `./utils`, `./helpers`,
+`./types` only when nothing is detected.
 
 ```jsonc
 {
   "ts": true,
   "case": "kebab",                                // deep-merge.ts vs deepMerge.ts
   "barrel": true,                                  // maintain an index.ts re-export
-  "aliases": { "utils": "@/utils", "helpers": "@/lib", "types": "@/types" },
-  "paths":   { "utils": "src/utils", "helpers": "src/lib", "types": "src/types" }
+  "comments": true,                                // keep the JSDoc header (false strips it)
+  "aliases": { "utils": "@/utils", "helpers": "@/helpers", "types": "@/types" },
+  "paths":   { "utils": "src/utils", "helpers": "src/helpers", "types": "src/types" }
 }
 ```
 

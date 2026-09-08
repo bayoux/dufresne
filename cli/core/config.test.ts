@@ -12,6 +12,7 @@ test("normalizeConfig fills every field from a partial object", () => {
   assert.equal(cfg.ts, true);
   assert.equal(cfg.case, "kebab");
   assert.equal(cfg.barrel, true);
+  assert.equal(cfg.comments, true);
 });
 
 test("normalizeConfig respects an explicit types path and alias", () => {
@@ -21,9 +22,10 @@ test("normalizeConfig respects an explicit types path and alias", () => {
 });
 
 test("normalizeConfig respects explicit false and camel case", () => {
-  const cfg = normalizeConfig({ ts: false, barrel: false, case: "camel" });
+  const cfg = normalizeConfig({ ts: false, barrel: false, comments: false, case: "camel" });
   assert.equal(cfg.ts, false);
   assert.equal(cfg.barrel, false);
+  assert.equal(cfg.comments, false);
   assert.equal(cfg.case, "camel");
 });
 

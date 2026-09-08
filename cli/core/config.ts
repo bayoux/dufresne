@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 import type { CaseStyle, Config } from "../types.ts";
+import { type Detection, detectProject } from "./detect.ts";
 
 export const CONFIG_FILE = "dufresne.json";
 
@@ -9,8 +10,9 @@ export const DEFAULT_CONFIG: Config = {
   ts: true,
   case: "kebab",
   barrel: true,
-  aliases: { utils: "./utils", helpers: "./lib", types: "./types" },
-  paths: { utils: "utils", helpers: "lib", types: "types" },
+  comments: true,
+  aliases: { utils: "./utils", helpers: "./helpers", types: "./types" },
+  paths: { utils: "utils", helpers: "helpers", types: "types" },
 };
 
 export function configPath(cwd: string): string {
@@ -30,8 +32,25 @@ export function findConfig(cwd: string): Config | null {
   return normalizeConfig(raw);
 }
 
+/**
+ * The config to use when there is no `dufresne.json`: defaults overlaid with
+ * whatever path aliases the project's own ts/jsconfig reveal.
+ */
+export function detectedConfig(cwd: string): { config: Config; detection: Detection } {
+  const detection = detectProject(cwd);
+  return {
+    detection,
+    config: {
+      ...DEFAULT_CONFIG,
+      ts: detection.ts ?? DEFAULT_CONFIG.ts,
+      aliases: { ...DEFAULT_CONFIG.aliases, ...detection.aliases },
+      paths: { ...DEFAULT_CONFIG.paths, ...detection.paths },
+    },
+  };
+}
+
 export function loadConfig(cwd: string): Config {
-  return findConfig(cwd) ?? DEFAULT_CONFIG;
+  return findConfig(cwd) ?? detectedConfig(cwd).config;
 }
 
 export function writeConfig(cwd: string, config: Config): string {
@@ -53,6 +72,7 @@ export function normalizeConfig(raw: unknown): Config {
     ts: r.ts !== false,
     case: style,
     barrel: r.barrel !== false,
+    comments: r.comments !== false,
     aliases: {
       utils: typeof aliases.utils === "string" ? aliases.utils : DEFAULT_CONFIG.aliases.utils,
       helpers:

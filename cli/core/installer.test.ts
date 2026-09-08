@@ -11,6 +11,7 @@ const config: Config = {
   ts: true,
   case: "kebab",
   barrel: true,
+  comments: true,
   aliases: { utils: "~/utils", helpers: "~/lib", types: "~/types" },
   paths: { utils: "app/utils", helpers: "app/lib", types: "app/types" },
 };

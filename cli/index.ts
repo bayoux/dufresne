@@ -14,14 +14,16 @@ ${styleText("bold", "Usage")}
   dufresne <command> [items...] [options]
 
 ${styleText("bold", "Commands")}
-  init              Create a dufresne.json in the current project
+  init              Create a dufresne.json (pre-filled from your tsconfig paths)
   add [items...]    Add items (and their dependencies) to your project
   list              Display all available items
-  info <name>       Show an item's description, deps and examples
+  info [name]       Show an item's description, deps and examples
 
 ${styleText("bold", "Options")}
   -a, --all           add: select every item
   -o, --overwrite     add: overwrite existing files without asking
+      --jsdoc         add: keep JSDoc comments in added files
+      --no-jsdoc      add: strip JSDoc comments from added files
       --cwd <dir>     add: target project directory (default: .)
       --registry <s>  URL or local path of the registry to use
   -h, --help          Show this help
@@ -34,6 +36,8 @@ async function main() {
     options: {
       all: { type: "boolean", short: "a", default: false },
       overwrite: { type: "boolean", short: "o", default: false },
+      jsdoc: { type: "boolean", default: false },
+      "no-jsdoc": { type: "boolean", default: false },
       cwd: { type: "string" },
       registry: { type: "string" },
       help: { type: "boolean", short: "h", default: false },
@@ -52,6 +56,8 @@ async function main() {
     return;
   }
 
+  const jsdoc = values.jsdoc ? true : values["no-jsdoc"] ? false : undefined;
+
   switch (command) {
     case "init":
       await init();
@@ -62,6 +68,7 @@ async function main() {
         overwrite: values.overwrite,
         registry: values.registry,
         cwd: values.cwd,
+        jsdoc,
       });
       break;
     case "list":

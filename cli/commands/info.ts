@@ -5,13 +5,7 @@ import * as p from "@clack/prompts";
 import { fetchRegistry } from "../core/http.ts";
 
 export async function info(name: string | undefined, registrySource?: string): Promise<void> {
-  if (!name) {
-    console.error(styleText("red", "Usage: dufresne info <name>"));
-    process.exitCode = 1;
-    return;
-  }
-
-  p.intro(styleText("magenta", `info: ${name}`));
+  p.intro(styleText("magenta", "info"));
 
   let registry;
   try {
@@ -21,12 +15,27 @@ export async function info(name: string | undefined, registrySource?: string): P
     process.exit(1);
   }
 
-  const item = registry.items[name];
+  let target = name;
+  if (!target) {
+    const picked = await p.autocomplete({
+      message: "Pick an item",
+      options: Object.values(registry.items)
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((it) => ({ value: it.name, label: it.name, hint: `${it.type} · ${it.description}` })),
+    });
+    if (p.isCancel(picked)) {
+      p.outro(styleText("yellow", "Cancelled."));
+      return;
+    }
+    target = picked as string;
+  }
+
+  const item = registry.items[target];
   if (!item) {
     const near = Object.keys(registry.items)
-      .filter((n) => n.includes(name) || name.includes(n))
+      .filter((n) => n.includes(target) || target.includes(n))
       .slice(0, 5);
-    p.log.error(styleText("red", `"${name}" is not in the registry.`));
+    p.log.error(styleText("red", `"${target}" is not in the registry.`));
     if (near.length) p.log.info(styleText("dim", `Did you mean: ${near.join(", ")}?`));
     p.outro(styleText("dim", "Run `dufresne list`."));
     return;

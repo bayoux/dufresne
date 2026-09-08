@@ -24,13 +24,15 @@ cli/
   index.ts                        # arg parsing + command dispatch
   commands/{add,list,init,info}.ts  # one file per command
   core/
-    http.ts                     # registry + file fetching
+    http.ts                     # registry + file fetching (parallel in `add`)
     registry.ts                 # resolveDependencies() — the graph walk
-    config.ts                   # dufresne.json read/write/normalize
+    config.ts                   # dufresne.json read/write/normalize + detectedConfig()
+    detect.ts                   # read the consumer's tsconfig/jsconfig path aliases
     installer.ts                # path resolution, import rewriting, barrel file
     pm.ts                       # package-manager detection + install
   lib/
     metadata.ts                 # JSDoc parsing + extractDependencies() + hashing
+    transform.ts                # stripJsdoc() — drop the JSDoc header on request
     cases.ts                    # kebab/camel filename casing
   types.ts                      # Registry / RegistryItem / Config
 scripts/
@@ -108,18 +110,27 @@ consumer's configured aliases so the copied file compiles in their project.
 
 ## Consumer config — `dufresne.json`
 
-`dufresne init` writes it; `dufresne add` reads it (falling back to
-`DEFAULT_CONFIG`). It controls where files land and how imports are rewritten:
+`dufresne init` writes it; `dufresne add` reads it. It controls where files land
+and how imports are rewritten:
 
 ```jsonc
 {
   "ts": true,
   "case": "kebab",                              // deep-merge.ts vs deepMerge.ts
   "barrel": true,                               // maintain index.ts re-exports
-  "aliases": { "utils": "@/utils", "helpers": "@/lib", "types": "@/types" },
-  "paths":   { "utils": "src/utils", "helpers": "src/lib", "types": "src/types" }
+  "comments": true,                             // keep the JSDoc header (false = stripJsdoc)
+  "aliases": { "utils": "@/utils", "helpers": "@/helpers", "types": "@/types" },
+  "paths":   { "utils": "src/utils", "helpers": "src/helpers", "types": "src/types" }
 }
 ```
+
+When there is no `dufresne.json`, `detectedConfig()` ([cli/core/config.ts](cli/core/config.ts))
+overlays `DEFAULT_CONFIG` with whatever `detectProject()`
+([cli/core/detect.ts](cli/core/detect.ts)) can read from the consumer's
+`tsconfig.json` / `jsconfig.json`: it takes `compilerOptions.paths`, prefers an
+alias that already names a kind (`…/utils`, `…/lib`, `…/types`), and otherwise
+derives one from a catch-all like `@/*` → `src/*`. `init` seeds every prompt from
+the same detection, so the common case is a single Enter-through.
 
 ## Scaling notes
 

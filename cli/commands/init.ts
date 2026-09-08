@@ -1,17 +1,15 @@
-import fs from "node:fs";
-import path from "node:path";
 import { styleText } from "node:util";
 
 import * as p from "@clack/prompts";
 
-import { CONFIG_FILE, DEFAULT_CONFIG, findConfig, writeConfig } from "../core/config.ts";
+import { CONFIG_FILE, detectedConfig, findConfig, writeConfig } from "../core/config.ts";
 import type { CaseStyle, Config } from "../types.ts";
 
 export async function init(): Promise<void> {
   p.intro(`${styleText(["bgCyan", "black"], " dufresne init ")}`);
 
   const cwd = process.cwd();
-  const tsDefault = fs.existsSync(path.join(cwd, "tsconfig.json"));
+
   if (findConfig(cwd)) {
     const overwrite = await p.confirm({
       message: `${CONFIG_FILE} already exists. Recreate it?`,
@@ -23,45 +21,24 @@ export async function init(): Promise<void> {
     }
   }
 
+  // Pre-fill every answer from the project's own ts/jsconfig where possible.
+  const { config: base, detection } = detectedConfig(cwd);
+  if (detection.source) {
+    p.log.info(styleText("dim", `Detected path aliases from ${detection.source}.`));
+  }
+
+  const ask = (message: string, value: string) =>
+    p.text({ message, initialValue: value, defaultValue: value, placeholder: value });
+
   const answers = await p.group(
     {
-      ts: () => p.confirm({ message: "Use TypeScript?", initialValue: tsDefault }),
-      utilsPath: () =>
-        p.text({
-          message: "Where should utils be written?",
-          placeholder: DEFAULT_CONFIG.paths.utils,
-          defaultValue: DEFAULT_CONFIG.paths.utils,
-        }),
-      utilsAlias: () =>
-        p.text({
-          message: "Import alias for utils?",
-          placeholder: DEFAULT_CONFIG.aliases.utils,
-          defaultValue: DEFAULT_CONFIG.aliases.utils,
-        }),
-      helpersPath: () =>
-        p.text({
-          message: "Where should helpers be written?",
-          placeholder: DEFAULT_CONFIG.paths.helpers,
-          defaultValue: DEFAULT_CONFIG.paths.helpers,
-        }),
-      helpersAlias: () =>
-        p.text({
-          message: "Import alias for helpers?",
-          placeholder: DEFAULT_CONFIG.aliases.helpers,
-          defaultValue: DEFAULT_CONFIG.aliases.helpers,
-        }),
-      typesPath: () =>
-        p.text({
-          message: "Where should type-only utilities be written?",
-          placeholder: DEFAULT_CONFIG.paths.types,
-          defaultValue: DEFAULT_CONFIG.paths.types,
-        }),
-      typesAlias: () =>
-        p.text({
-          message: "Import alias for type-only utilities?",
-          placeholder: DEFAULT_CONFIG.aliases.types,
-          defaultValue: DEFAULT_CONFIG.aliases.types,
-        }),
+      ts: () => p.confirm({ message: "Use TypeScript?", initialValue: base.ts }),
+      utilsPath: () => ask("Where should utils be written?", base.paths.utils),
+      utilsAlias: () => ask("Import alias for utils?", base.aliases.utils),
+      helpersPath: () => ask("Where should helpers be written?", base.paths.helpers),
+      helpersAlias: () => ask("Import alias for helpers?", base.aliases.helpers),
+      typesPath: () => ask("Where should type-only utilities be written?", base.paths.types),
+      typesAlias: () => ask("Import alias for type-only utilities?", base.aliases.types),
       caseStyle: () =>
         p.select({
           message: "Filename casing?",
@@ -69,10 +46,12 @@ export async function init(): Promise<void> {
             { value: "kebab", label: "kebab-case (deep-merge.ts)" },
             { value: "camel", label: "camelCase (deepMerge.ts)" },
           ],
-          initialValue: DEFAULT_CONFIG.case,
+          initialValue: base.case,
         }),
       barrel: () =>
-        p.confirm({ message: "Maintain an index barrel file?", initialValue: DEFAULT_CONFIG.barrel }),
+        p.confirm({ message: "Maintain an index barrel file?", initialValue: base.barrel }),
+      comments: () =>
+        p.confirm({ message: "Keep JSDoc comments in added files?", initialValue: base.comments }),
     },
     {
       onCancel: () => {
@@ -86,6 +65,7 @@ export async function init(): Promise<void> {
     ts: answers.ts,
     case: answers.caseStyle as CaseStyle,
     barrel: answers.barrel,
+    comments: answers.comments,
     aliases: { utils: answers.utilsAlias, helpers: answers.helpersAlias, types: answers.typesAlias },
     paths: { utils: answers.utilsPath, helpers: answers.helpersPath, types: answers.typesPath },
   };
