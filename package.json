@@ -7,12 +7,18 @@
   "files": [
     "dist"
   ],
+  "engines": {
+    "node": ">=22.18"
+  },
   "scripts": {
-    "build:registry": "tsx build-registry.ts",
-    "build": "pnpm run build:registry && tsup",
-    "dev": "tsup --watch --onSuccess \"node dist/index.js\"",
-    "start": "tsx index.ts",
+    "registry": "node scripts/build-registry.ts",
+    "start": "node cli/index.ts",
+    "dev": "node --watch cli/index.ts",
+    "test": "node --test",
     "lint": "tsc --noEmit",
+    "check:registry": "node scripts/build-registry.ts && git diff --exit-code -- registry.json",
+    "check": "pnpm run lint && pnpm run test && pnpm run check:registry",
+    "build": "node scripts/build-registry.ts && tsdown",
     "release": "release-it",
     "prepublishOnly": "pnpm run build"
   },
@@ -36,14 +42,10 @@
   "devDependencies": {
     "@types/node": "^25.6.0",
     "release-it": "^20.0.1",
-    "tsup": "^8.5.1",
-    "tsx": "^4.21.0",
-    "typescript": "^6.0.3"
+    "tsdown": "^0.15.6",
+    "typescript": "^7.0.0"
   },
   "dependencies": {
-    "@clack/prompts": "^1.2.0",
-    "commander": "^14.0.3",
-    "ora": "^9.4.0",
-    "picocolors": "^1.1.1"
+    "@clack/prompts": "^1.7.0"
   }
 }

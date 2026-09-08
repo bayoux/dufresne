@@ -24,7 +24,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.14.0 
+          node-version: 24
           registry-url: 'https://registry.npmjs.org'
 
       - name: Upgrade npm CLI
@@ -33,11 +33,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # - name: Run Biome Check
-      #   run: pnpm run check:ci
+      - name: Lint
+        run: pnpm run lint
 
-      # - name: Run Tests
-      #   run: pnpm test
+      - name: Test
+        run: pnpm test
+
+      - name: Registry is up to date
+        run: pnpm run check:registry
 
       - name: Build
         run: pnpm run build

@@ -1,40 +1,50 @@
 {
-  "schemaVersion": "1",
+  "schemaVersion": "2",
   "baseUrl": "https://raw.githubusercontent.com/bayoux/dufresne/main/src",
-  "utils": [
-    {
-      "id": "idx-1451c548",
+  "items": {
+    "intersection": {
+      "id": "dfr-067114f5",
+      "type": "util",
       "name": "intersection",
-      "file": "utils/intersection.ts",
-      "description": "Returns the intersection of multiple arrays. ",
-      "category": "utils",
+      "file": "utils/intersection/intersection.ts",
+      "description": "Returns the values common to every passed array.",
+      "category": "array",
       "tags": [
         "array",
         "filter",
         "intersection"
       ],
-      "hash": "6eef9349735d7b04bbebfb428fcd479e35ddce399d694b2508b1358feaa74bd4",
+      "usage": "high",
+      "examples": [
+        "intersection([1, 2, 3, 4], [2, 3, 5], [0, 2, 3]); // [2, 3]"
+      ],
+      "hash": "42fa32cfbf9bf360a8cde380f0e5ebe9fe0e3fb27f291b8cc70d3f47fc50e7a1",
       "dependencies": {
         "npm": [],
         "internal": []
       }
     },
-    {
-      "id": "idx-5cfcf7a2",
+    "pull": {
+      "id": "dfr-b4fea42f",
+      "type": "util",
       "name": "pull",
-      "file": "utils/pull.ts",
-      "description": "Removes all specified values ​​from the array. Uses Set for high performance.",
-      "category": "utils",
+      "file": "utils/pull/pull.ts",
+      "description": "Removes every occurrence of the given values from an array.",
+      "category": "array",
       "tags": [
         "array",
         "filter",
         "transformation"
       ],
-      "hash": "8db7e4708e1dd65f7933f46d7fbc62e27deeaece72dbdcc3ae5da656e57bd520",
+      "usage": "high",
+      "examples": [
+        "pull([1, 2, 3, 1, 2], 2, 3); // [1, 1]"
+      ],
+      "hash": "06e392e4214efc0ab6afacaf5017ac5285e324645355caefa9b38231770f5980",
       "dependencies": {
         "npm": [],
         "internal": []
       }
     }
-  ]
+  }
 }

@@ -1,7 +1,11 @@
 src/
+cli/
+scripts/
 *.config.ts
 *.config.js
 tsconfig.json
+registry.json
+ARCHITECTURE.md
 .prettierrc
 eslint.config.js
 
