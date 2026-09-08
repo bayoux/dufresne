@@ -1,5 +1,9 @@
 # dufresne
 
+[![CI](https://github.com/enqrose/dufresne/actions/workflows/ci.yml/badge.svg)](https://github.com/enqrose/dufresne/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/dufresne.svg)](https://www.npmjs.com/package/dufresne)
+[![license: MIT](https://img.shields.io/npm/l/dufresne.svg)](LICENSE)
+
 Fast CLI for import utils — copy small, dependency-free TypeScript utilities
 straight into your project instead of installing a package for them. Same idea
 as shadcn/ui, applied to plain functions.
@@ -31,6 +35,7 @@ npx dufresne add [items...]   # add items (interactive picker if none given)
 npx dufresne update [items...] # re-sync installed items whose upstream source changed
 npx dufresne remove [items...] # delete installed item(s) and their barrel export
 npx dufresne sync             # install exactly what dufresne.json's "items" declares
+npx dufresne doctor           # check Node version, registry access, config health
 ```
 
 A misspelled name gets a "did you mean" instead of a hard failure, on every
@@ -106,6 +111,7 @@ one it applies the same detection on the fly (so `@/*` → `src/*` projects get
 
 ```jsonc
 {
+  "$schema": "https://raw.githubusercontent.com/enqrose/dufresne/main/schema.json",
   "ts": true,
   "case": "kebab",                                // deep-merge.ts vs deepMerge.ts
   "barrel": true,                                  // maintain an index.ts re-export
@@ -115,6 +121,10 @@ one it applies the same detection on the fly (so `@/*` → `src/*` projects get
   "paths":   { "utils": "src/utils", "helpers": "src/helpers", "types": "src/types" }
 }
 ```
+
+`init` writes the `$schema` line automatically, so editors with a JSON
+language server (VS Code out of the box) validate the file and autocomplete
+its keys as you type.
 
 Utils and helpers install as regular code; type-only items (see below) get
 their own `types` path/alias and are always written as `.ts`, since a type has
@@ -128,7 +138,7 @@ explicit dependency graph. Where an `@example` is precise enough to run
 (`expr; // expected`), it's checked by `pnpm test` like any other test — a
 wrong example in the docs is a build failure, not just a typo.
 
-88 items: the runtime utils are most of the classic underscore.js set, the
+90 items: the runtime utils are most of the classic underscore.js set, the
 types are most of the well-known "TypeScript utility types" (the type-fest /
 utility-types canon), and the helpers are popular algorithms, data structures
 and patterns — the ones people reach for or reimplement constantly. All three
@@ -143,7 +153,7 @@ skip whatever's already native: native JS methods for the utils,
 **collection** — `groupBy`, `countBy`, `partition`, `pluck`
 
 **function** — `once`, `after`, `memoize`, `negate`, `partial`, `compose`,
-`debounce`
+`pipe`, `debounce`, `throttle`
 
 **object** — `pick`, `omit`, `defaults`, `invert`, `isEqual`, `isEmpty`
 

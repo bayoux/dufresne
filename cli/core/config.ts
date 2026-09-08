@@ -5,6 +5,7 @@ import type { CaseStyle, Config } from "../types.ts";
 import { type Detection, detectProject } from "./detect.ts";
 
 export const CONFIG_FILE = "dufresne.json";
+export const CONFIG_SCHEMA_URL = "https://raw.githubusercontent.com/enqrose/dufresne/main/schema.json";
 
 export const DEFAULT_CONFIG: Config = {
   ts: true,
@@ -56,7 +57,8 @@ export function loadConfig(cwd: string): Config {
 
 export function writeConfig(cwd: string, config: Config): string {
   const file = configPath(cwd);
-  fs.writeFileSync(file, `${JSON.stringify(config, null, 2)}\n`, "utf-8");
+  const payload = { $schema: CONFIG_SCHEMA_URL, ...config };
+  fs.writeFileSync(file, `${JSON.stringify(payload, null, 2)}\n`, "utf-8");
   return file;
 }
 

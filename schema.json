@@ -1,0 +1,63 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/enqrose/dufresne/main/schema.json",
+  "title": "dufresne.json",
+  "description": "Project config written by `dufresne init`, read by `dufresne add`/`update`/`sync`. See https://github.com/enqrose/dufresne/blob/main/README.md#configuration.",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Points editors at this schema for autocomplete/validation."
+    },
+    "ts": {
+      "type": "boolean",
+      "default": true,
+      "description": "Emit TypeScript (true) or JavaScript (false)."
+    },
+    "case": {
+      "type": "string",
+      "enum": ["kebab", "camel"],
+      "default": "kebab",
+      "description": "Filename casing for installed files, e.g. deep-merge.ts vs deepMerge.ts."
+    },
+    "barrel": {
+      "type": "boolean",
+      "default": true,
+      "description": "Maintain an index barrel file re-exporting each installed item."
+    },
+    "comments": {
+      "type": "boolean",
+      "default": true,
+      "description": "Keep the JSDoc header in added files. false strips it."
+    },
+    "items": {
+      "type": "array",
+      "items": { "type": "string" },
+      "default": [],
+      "description": "The declared set of items this project depends on. `add` appends to it; `sync` installs exactly this set."
+    },
+    "aliases": {
+      "type": "object",
+      "description": "Import specifiers that internal #utils/*, #helpers/* and #types/* references are rewritten to when an item is installed.",
+      "properties": {
+        "utils": { "type": "string" },
+        "helpers": { "type": "string" },
+        "types": { "type": "string" }
+      },
+      "required": ["utils", "helpers", "types"],
+      "additionalProperties": false
+    },
+    "paths": {
+      "type": "object",
+      "description": "On-disk destinations for installed files, relative to the project root.",
+      "properties": {
+        "utils": { "type": "string" },
+        "helpers": { "type": "string" },
+        "types": { "type": "string" }
+      },
+      "required": ["utils", "helpers", "types"],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

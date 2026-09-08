@@ -22,8 +22,10 @@ src/
                                  # (camelCase fn or PascalCase class per <name>)
   types/<name>/<name>.ts        # pure TS types (interfaces/type aliases, no runtime code)
 cli/
-  index.ts                                       # arg parsing + command dispatch
-  commands/{add,update,remove,sync,list,init,info}.ts  # one file per command
+  index.ts                     # bin entry: Node-version guard, then dynamically
+                                # imports main.ts (see "Node version guard" below)
+  main.ts                      # arg parsing + command dispatch
+  commands/{add,update,remove,sync,list,init,info,doctor}.ts  # one file per command
   core/
     http.ts                     # registry + file fetching (parallel in `add`/`update`)
     registry.ts                 # resolveDependencies() — the graph walk
@@ -43,6 +45,7 @@ scripts/
   build-registry.ts             # scans src/, writes registry.json
   new-item.ts                   # maintainer-only scaffolder (`pnpm new <Name>`), not shipped
   verify-examples.test.ts       # runs runnable `@example`s as node:test cases
+  cli-integration.test.ts       # spawns cli/index.ts as a subprocess per command
 ```
 
 ## Adding an item
@@ -82,7 +85,7 @@ short of the implementation — fill in the `TODO`. Manually:
 
 Pure TypeScript utility types (`DeepPartial`, `Prettify`, …) get their own
 `ItemType` — `"type"` — and their own folder, `src/types/<name>/`, install
-path (`paths.types`), import alias (`aliases.types`), and `@/types/<name>`
+path (`paths.types`), import alias (`aliases.types`), and `#types/<name>`
 import prefix. They're kept out of `utils/` on purpose: a consumer without
 TypeScript can't use them at all, and a type has no runtime footprint to mix
 with actual function calls. `targetInfo()` forces `.ts` for a type item
@@ -106,34 +109,51 @@ committed `registry.json`); CI runs it before publishing.
 Import another catalog item by alias — **never** by relative path:
 
 ```ts
-import { compact } from "@/utils/compact/compact";
-import { toArray } from "@/helpers/to-array/to-array";
-import type { Prettify } from "@/types/Prettify/Prettify";
+import { compact } from "#utils/compact/compact";
+import { toArray } from "#helpers/to-array/to-array";
+import type { Prettify } from "#types/Prettify/Prettify";
 ```
 
-`extractDependencies()` ([cli/lib/metadata.ts](cli/lib/metadata.ts)) reads these
-at registry-build time:
+This actually resolves — at both `tsc` and plain `node`/`node --test` — via
+[package.json](package.json)'s `imports` field:
 
-- `@/utils/*` / `@/helpers/*` / `@/types/*` → `dependencies.internal` (other
+```json
+"imports": {
+  "#utils/*": "./src/utils/*.ts",
+  "#helpers/*": "./src/helpers/*.ts",
+  "#types/*": "./src/types/*.ts"
+}
+```
+
+`#`-prefixed subpath imports are a native Node feature (not a bundler-only
+convention), and TypeScript's `nodenext` module resolution (already this
+repo's setting) reads the same field the same way — so there's one source of
+truth instead of a `tsconfig.json` `paths` block that only `tsc` understood.
+`*` captures the whole rest of the specifier including the extra `/<name>`,
+which is exactly what the folder-per-item doubling needs: `#utils/uniq/uniq`
+→ `./src/utils/uniq/uniq.ts`. [sample.ts](src/utils/sample/sample.ts) →
+`shuffle` and [lcm.ts](src/helpers/lcm/lcm.ts) → `gcd` are real examples —
+`dufresne info sample` shows `shuffle` as a dependency, and `dufresne add
+sample` installs both.
+
+(`#` also sidesteps a small ambiguity `@` had: a real scoped npm import like
+`@clack/prompts` and an internal ref both started with `@`, so the internal
+check had to run first. `extractDependencies()` no longer needs that care.)
+
+`extractDependencies()` ([cli/lib/metadata.ts](cli/lib/metadata.ts)) reads
+these at registry-build time:
+
+- `#utils/*` / `#helpers/*` / `#types/*` → `dependencies.internal` (other
   registry items)
 - any other bare specifier (not `node:`, not `react`) → `dependencies.npm`
 
 At `add` time, `resolveDependencies()` ([cli/core/registry.ts](cli/core/registry.ts))
 walks that graph: it pulls in transitive `internal` items in topological order
 (deps first), unions every `npm` package, and errors on a missing item or a
-cycle. `installer.rewriteImports()` then rewrites the `@/…` specifiers to the
-consumer's configured aliases so the copied file compiles in their project.
-
-**Known gap:** `@/utils/*` etc. resolve at *TypeScript-check* time (via
-`tsconfig.json`'s `paths`) and get parsed at *registry-build* time
-(`extractDependencies`), but Node's native runtime has no path-mapping — so a
-file that actually uses this alias will pass `pnpm lint` yet crash with
-`ERR_MODULE_NOT_FOUND` under plain `pnpm test`, since nothing in this repo
-resolves `@/*` at runtime. No current catalog item uses a real cross-item
-import (all 46 are self-contained) precisely to sidestep this; wiring up a
-loader (or switching the convention to a real bare specifier) is unsolved.
-Don't add an internal import without solving this first — verify with
-`node --test src/utils/<name>/<name>.test.ts` directly, not just `tsc`.
+cycle. `installer.rewriteImports()` then rewrites the `#…` specifiers to the
+consumer's configured aliases (still whatever their own project uses, e.g.
+`@/utils/*` — the `#` convention is purely internal to this repo) so the
+copied file compiles in their project.
 
 ## Consumer config — `dufresne.json`
 
@@ -186,8 +206,36 @@ unknown name gets a suggestion from [cli/lib/suggest.ts](cli/lib/suggest.ts)
 `add`/`update` carry on with whatever names *did* resolve rather than aborting
 the whole batch over one typo.
 
+## Node version guard
+
+[cli/index.ts](cli/index.ts) is intentionally the only file in this repo with
+zero imports besides bare Node globals. It checks `process.versions.node`
+against `engines.node` in [package.json](package.json) and, if too old, prints
+a plain-English message and exits — *before* [cli/main.ts](cli/main.ts) (and
+everything it pulls in, starting with `node:util`'s `styleText`/`parseArgs`,
+unavailable pre-22.13) ever loads. That "before" only holds because the load
+is a dynamic `await import("./main.ts")`: a static `import` at the top of a
+module is hoisted and evaluated by the language regardless of where it's
+written in the file, version check or not, so it wouldn't guard anything.
+
+This survives bundling, checked empirically, not assumed: `tsdown` (rolldown)
+treats the dynamic import as a real code-splitting boundary, so `pnpm build`
+emits `dist/index.js` (just the guard — no `node:util`, nothing else) plus a
+separate `dist/main-*.js` chunk for the rest, and `npm pack` ships both
+(`files: ["dist"]` covers the whole directory, hashed chunk name included).
+
 ## Scaling notes
 
+- **Command orchestration is tested end-to-end, not just its pieces.**
+  `cli/core`/`cli/lib` are unit-tested, but `cli/commands/*.ts` — the actual
+  `add`/`update`/`remove`/`sync` logic — only got manual, throwaway smoke
+  testing for a long time. [scripts/cli-integration.test.ts](scripts/cli-integration.test.ts)
+  closes that: it spawns `cli/index.ts` as a real subprocess per test, against
+  a fresh temp dir and this repo's own `registry.json` (a local path, so it's
+  offline and immune to upstream drift), and asserts on files/exit
+  codes/stdout — including the dependency pull-in (`add sample` also writes
+  `shuffle`) and the modify → `update` → restored round trip. Auto-discovered
+  by bare `pnpm test`, same as `verify-examples.test.ts`.
 - **Flat is fine.** One folder per item keeps the tree navigable into the
   hundreds without a manifest to hand-maintain.
 - **The registry is a map** (`items: Record<name, …>`), so lookup and
