@@ -7,7 +7,7 @@ import type { ItemType, Registry, RegistryItem } from "../cli/types.ts";
 const ROOT = process.cwd();
 const SRC = join(ROOT, "src");
 const OUT = join(ROOT, "registry.json");
-const BASE_URL = "https://raw.githubusercontent.com/bayoux/dufresne/main/src";
+const BASE_URL = "https://raw.githubusercontent.com/enqrose/dufresne/main/src";
 
 /** Top-level folder under src/ -> item type. */
 const TYPE_DIRS: Record<string, ItemType> = { utils: "util", helpers: "helper", types: "type" };

@@ -14,18 +14,22 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
           version: 10
 
+      # v7+ is required for OIDC trusted publishing: earlier versions always
+      # wrote a dummy NODE_AUTH_TOKEN into .npmrc (with always-auth=true),
+      # which silently defeats the OIDC handshake even when unset.
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
 
       - name: Upgrade npm CLI
         run: npm install -g npm@11.5.1

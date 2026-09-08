@@ -24,7 +24,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bayoux/dufresne.git"
+    "url": "git+https://github.com/enqrose/dufresne.git"
   },
   "keywords": [
     "utils",
@@ -36,9 +36,9 @@
   "license": "MIT",
   "type": "module",
   "bugs": {
-    "url": "https://github.com/bayoux/dufresne/issues"
+    "url": "https://github.com/enqrose/dufresne/issues"
   },
-  "homepage": "https://github.com/bayoux/dufresne#readme",
+  "homepage": "https://github.com/enqrose/dufresne#readme",
   "devDependencies": {
     "@types/node": "^25.6.0",
     "release-it": "^20.0.1",

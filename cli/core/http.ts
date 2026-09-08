@@ -3,7 +3,7 @@ import path from "node:path";
 
 import type { Registry } from "../types.ts";
 
-const REGISTRY_URL = "https://raw.githubusercontent.com/bayoux/dufresne/main/registry.json";
+const REGISTRY_URL = "https://raw.githubusercontent.com/enqrose/dufresne/main/registry.json";
 
 async function fetchWithTimeout(url: string, timeout = 10000) {
   const controller = new AbortController();
