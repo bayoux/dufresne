@@ -3,8 +3,43 @@ import { styleText } from "node:util";
 import * as p from "@clack/prompts";
 
 import { fetchRegistry } from "../core/http.ts";
+import type { RegistryItem } from "../types.ts";
 
-export async function list(registrySource?: string): Promise<void> {
+export interface ListFilters {
+  query?: string | undefined;
+  category?: string | undefined;
+  tag?: string | undefined;
+  json?: boolean | undefined;
+}
+
+function matches(item: RegistryItem, filters: ListFilters): boolean {
+  if (filters.category && item.category.toLowerCase() !== filters.category.toLowerCase()) {
+    return false;
+  }
+  if (filters.tag && !item.tags.some((t) => t.toLowerCase() === filters.tag!.toLowerCase())) {
+    return false;
+  }
+  if (filters.query) {
+    const haystack = [item.name, item.description, item.category, ...item.tags].join(" ").toLowerCase();
+    if (!haystack.includes(filters.query.toLowerCase())) return false;
+  }
+  return true;
+}
+
+export async function list(registrySource?: string, filters: ListFilters = {}): Promise<void> {
+  // --json is for scripts: no clack chrome, no ANSI, just data on stdout.
+  if (filters.json) {
+    try {
+      const registry = await fetchRegistry(registrySource);
+      const items = Object.values(registry.items).filter((item) => matches(item, filters));
+      console.log(JSON.stringify(items, null, 2));
+    } catch (error) {
+      console.error(error instanceof Error ? error.message : "Unknown error");
+      process.exit(1);
+    }
+    return;
+  }
+
   p.intro(styleText("magenta", "Available items"));
 
   const s = p.spinner();
@@ -21,10 +56,17 @@ export async function list(registrySource?: string): Promise<void> {
   }
 
   const rank: Record<string, number> = { high: 0, medium: 1, low: 2 };
-  const items = Object.values(registry.items).sort((a, b) => {
-    const byUsage = (rank[a.usage ?? ""] ?? 3) - (rank[b.usage ?? ""] ?? 3);
-    return byUsage || a.name.localeCompare(b.name);
-  });
+  const items = Object.values(registry.items)
+    .filter((item) => matches(item, filters))
+    .sort((a, b) => {
+      const byUsage = (rank[a.usage ?? ""] ?? 3) - (rank[b.usage ?? ""] ?? 3);
+      return byUsage || a.name.localeCompare(b.name);
+    });
+
+  if (!items.length) {
+    p.outro(styleText("dim", "No items match that filter."));
+    return;
+  }
 
   const lines = items.map((item) => {
     const badges: string[] = [];
@@ -44,5 +86,5 @@ export async function list(registrySource?: string): Promise<void> {
   console.log(lines.join("\n"));
   console.log("");
 
-  p.outro(styleText("dim", `${items.length} items found.`));
+  p.outro(styleText("dim", `${items.length} item${items.length === 1 ? "" : "s"} found.`));
 }

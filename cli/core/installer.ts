@@ -21,6 +21,11 @@ export interface TargetInfo {
   isTypeOnly: boolean;
 }
 
+/** The consumer's configured import alias for an item, e.g. `@/utils/chunk`. */
+export function importAlias(item: RegistryItem, config: Config): string {
+  return `${config.aliases[PATH_KEY[item.type]]}/${applyCase(item.name, config.case)}`;
+}
+
 export function targetInfo(item: RegistryItem, config: Config, cwd: string): TargetInfo {
   // Type-only items have no JS representation — they're always .ts, regardless
   // of the consumer's `ts` setting.
@@ -73,4 +78,22 @@ export function appendBarrel(target: TargetInfo): void {
   if (!current.includes(`./${target.base}'`)) {
     fs.appendFileSync(target.barrelPath, line, "utf-8");
   }
+}
+
+/** The inverse of {@link appendBarrel}: drops the item's re-export line, if any. */
+export function removeFromBarrel(target: TargetInfo): void {
+  if (!fs.existsSync(target.barrelPath)) return;
+
+  const lines = fs.readFileSync(target.barrelPath, "utf-8").split("\n");
+  const kept = lines.filter((line) => !line.includes(`from './${target.base}'`));
+  if (kept.length !== lines.length) {
+    fs.writeFileSync(target.barrelPath, kept.join("\n"), "utf-8");
+  }
+}
+
+/** Deletes the item's file, if present. Returns whether anything was removed. */
+export function removeItemFile(target: TargetInfo): boolean {
+  if (!fs.existsSync(target.filePath)) return false;
+  fs.rmSync(target.filePath);
+  return true;
 }

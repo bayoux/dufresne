@@ -5,13 +5,21 @@ import path from "node:path";
 import { test } from "node:test";
 
 import type { Config, RegistryItem } from "../types.ts";
-import { appendBarrel, rewriteImports, targetInfo } from "./installer.ts";
+import {
+  appendBarrel,
+  importAlias,
+  removeFromBarrel,
+  removeItemFile,
+  rewriteImports,
+  targetInfo,
+} from "./installer.ts";
 
 const config: Config = {
   ts: true,
   case: "kebab",
   barrel: true,
   comments: true,
+  items: [],
   aliases: { utils: "~/utils", helpers: "~/lib", types: "~/types" },
   paths: { utils: "app/utils", helpers: "app/lib", types: "app/types" },
 };
@@ -55,6 +63,15 @@ test("targetInfo routes a type item to the types path, forcing .ts", () => {
   assert.match(info.filePath, /\/project\/app\/types\/prettify\.ts$/);
 });
 
+test("importAlias builds the consumer-facing import specifier per kind", () => {
+  const util = { name: "deepMerge", type: "util" } as RegistryItem;
+  const help = { name: "toArray", type: "helper" } as RegistryItem;
+  const typ = { name: "DeepPartial", type: "type" } as RegistryItem;
+  assert.equal(importAlias(util, config), "~/utils/deep-merge");
+  assert.equal(importAlias(help, config), "~/lib/to-array");
+  assert.equal(importAlias(typ, config), "~/types/deep-partial");
+});
+
 test("appendBarrel writes `export type *` for type-only items, `export *` otherwise", (t) => {
   const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "dufresne-installer-"));
   t.after(() => fs.rmSync(cwd, { recursive: true, force: true }));
@@ -70,4 +87,43 @@ test("appendBarrel writes `export type *` for type-only items, `export *` otherw
   fs.mkdirSync(utilTarget.dir, { recursive: true });
   appendBarrel(utilTarget);
   assert.equal(fs.readFileSync(utilTarget.barrelPath, "utf-8"), "export * from './chunk';\n");
+});
+
+test("removeItemFile deletes the file and reports whether it existed", (t) => {
+  const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "dufresne-installer-"));
+  t.after(() => fs.rmSync(cwd, { recursive: true, force: true }));
+
+  const item = { name: "chunk", type: "util", file: "utils/chunk/chunk.ts" } as RegistryItem;
+  const target = targetInfo(item, config, cwd);
+  fs.mkdirSync(target.dir, { recursive: true });
+  fs.writeFileSync(target.filePath, "export function chunk() {}\n");
+
+  assert.equal(removeItemFile(target), true);
+  assert.equal(fs.existsSync(target.filePath), false);
+  assert.equal(removeItemFile(target), false);
+});
+
+test("removeFromBarrel drops only the matching export line", (t) => {
+  const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "dufresne-installer-"));
+  t.after(() => fs.rmSync(cwd, { recursive: true, force: true }));
+
+  const chunk = { name: "chunk", type: "util", file: "utils/chunk/chunk.ts" } as RegistryItem;
+  const clamp = { name: "clamp", type: "util", file: "utils/clamp/clamp.ts" } as RegistryItem;
+  const chunkTarget = targetInfo(chunk, config, cwd);
+  const clampTarget = targetInfo(clamp, config, cwd);
+
+  fs.mkdirSync(chunkTarget.dir, { recursive: true });
+  appendBarrel(chunkTarget);
+  appendBarrel(clampTarget);
+  assert.equal(
+    fs.readFileSync(chunkTarget.barrelPath, "utf-8"),
+    "export * from './chunk';\nexport * from './clamp';\n",
+  );
+
+  removeFromBarrel(chunkTarget);
+  assert.equal(fs.readFileSync(chunkTarget.barrelPath, "utf-8"), "export * from './clamp';\n");
+
+  // A no-op on a barrel that never had (or no longer has) the entry.
+  removeFromBarrel(chunkTarget);
+  assert.equal(fs.readFileSync(chunkTarget.barrelPath, "utf-8"), "export * from './clamp';\n");
 });

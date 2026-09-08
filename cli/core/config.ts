@@ -13,6 +13,7 @@ export const DEFAULT_CONFIG: Config = {
   comments: true,
   aliases: { utils: "./utils", helpers: "./helpers", types: "./types" },
   paths: { utils: "utils", helpers: "helpers", types: "types" },
+  items: [],
 };
 
 export function configPath(cwd: string): string {
@@ -67,12 +68,14 @@ export function normalizeConfig(raw: unknown): Config {
   const aliases = (r.aliases ?? {}) as Record<string, unknown>;
   const paths = (r.paths ?? {}) as Record<string, unknown>;
   const style: CaseStyle = r.case === "camel" ? "camel" : "kebab";
+  const items = Array.isArray(r.items) ? r.items.filter((i): i is string => typeof i === "string") : [];
 
   return {
     ts: r.ts !== false,
     case: style,
     barrel: r.barrel !== false,
     comments: r.comments !== false,
+    items,
     aliases: {
       utils: typeof aliases.utils === "string" ? aliases.utils : DEFAULT_CONFIG.aliases.utils,
       helpers:

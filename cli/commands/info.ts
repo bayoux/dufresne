@@ -3,8 +3,34 @@ import { styleText } from "node:util";
 import * as p from "@clack/prompts";
 
 import { fetchRegistry } from "../core/http.ts";
+import { suggest } from "../lib/suggest.ts";
 
-export async function info(name: string | undefined, registrySource?: string): Promise<void> {
+export async function info(
+  name: string | undefined,
+  registrySource?: string,
+  json = false,
+): Promise<void> {
+  if (json && !name) {
+    console.error("Usage: dufresne info <name> --json");
+    process.exit(1);
+  }
+
+  if (json) {
+    try {
+      const registry = await fetchRegistry(registrySource);
+      const item = registry.items[name!];
+      if (!item) {
+        console.error(JSON.stringify({ error: `"${name}" is not in the registry.` }));
+        process.exit(1);
+      }
+      console.log(JSON.stringify(item, null, 2));
+    } catch (error) {
+      console.error(error instanceof Error ? error.message : "Unknown error");
+      process.exit(1);
+    }
+    return;
+  }
+
   p.intro(styleText("magenta", "info"));
 
   let registry;
@@ -32,9 +58,7 @@ export async function info(name: string | undefined, registrySource?: string): P
 
   const item = registry.items[target];
   if (!item) {
-    const near = Object.keys(registry.items)
-      .filter((n) => n.includes(target) || target.includes(n))
-      .slice(0, 5);
+    const near = suggest(target, Object.keys(registry.items));
     p.log.error(styleText("red", `"${target}" is not in the registry.`));
     if (near.length) p.log.info(styleText("dim", `Did you mean: ${near.join(", ")}?`));
     p.outro(styleText("dim", "Run `dufresne list`."));

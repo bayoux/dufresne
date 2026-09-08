@@ -10,7 +10,8 @@ export async function init(): Promise<void> {
 
   const cwd = process.cwd();
 
-  if (findConfig(cwd)) {
+  const existing = findConfig(cwd);
+  if (existing) {
     const overwrite = await p.confirm({
       message: `${CONFIG_FILE} already exists. Recreate it?`,
       initialValue: false,
@@ -66,6 +67,7 @@ export async function init(): Promise<void> {
     case: answers.caseStyle as CaseStyle,
     barrel: answers.barrel,
     comments: answers.comments,
+    items: existing?.items ?? [],
     aliases: { utils: answers.utilsAlias, helpers: answers.helpersAlias, types: answers.typesAlias },
     paths: { utils: answers.utilsPath, helpers: answers.helpersPath, types: answers.typesPath },
   };

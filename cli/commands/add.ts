@@ -4,17 +4,28 @@ import { styleText } from "node:util";
 
 import * as p from "@clack/prompts";
 
-import { CONFIG_FILE, detectedConfig, findConfig } from "../core/config.ts";
+import { CONFIG_FILE, detectedConfig, findConfig, writeConfig } from "../core/config.ts";
 import { fetchRegistry, loadItemContent } from "../core/http.ts";
-import { appendBarrel, rewriteImports, targetInfo, writeItemFile } from "../core/installer.ts";
+import {
+  appendBarrel,
+  importAlias,
+  rewriteImports,
+  targetInfo,
+  writeItemFile,
+} from "../core/installer.ts";
 import { detectPackageManager, installPackages } from "../core/pm.ts";
 import { resolveDependencies } from "../core/registry.ts";
+import { suggest } from "../lib/suggest.ts";
 import { stripJsdoc } from "../lib/transform.ts";
 import type { Config, RegistryItem } from "../types.ts";
 
 export interface AddOptions {
   overwrite: boolean;
   all: boolean;
+  /** Skip every confirmation (overwrite + package install) and proceed. */
+  yes: boolean;
+  /** Print the install plan and exit without writing or fetching sources. */
+  dryRun: boolean;
   registry?: string | undefined;
   cwd?: string | undefined;
   /** `true` keep JSDoc, `false` strip it, `undefined` follow config. */
@@ -69,6 +80,30 @@ export async function add(names: string[], options: AddOptions): Promise<void> {
     return;
   }
 
+  // Typos in explicit/`--all` names never happen for `--all` (it's built from
+  // the registry's own keys), but drop-with-a-suggestion is friendlier than a
+  // hard failure for a hand-typed name.
+  const known: string[] = [];
+  for (const name of selected) {
+    if (registry.items[name]) {
+      known.push(name);
+      continue;
+    }
+    const near = suggest(name, allNames);
+    p.log.warn(
+      styleText(
+        "yellow",
+        `"${name}" is not in the registry.${near.length ? ` Did you mean: ${near.join(", ")}?` : ""}`,
+      ),
+    );
+  }
+  selected = known;
+
+  if (!selected.length) {
+    p.outro(styleText("dim", "Nothing to add."));
+    return;
+  }
+
   let plan;
   try {
     plan = resolveDependencies(registry, selected);
@@ -101,6 +136,19 @@ export async function add(names: string[], options: AddOptions): Promise<void> {
     p.log.info(styleText("dim", `+ dependencies: ${extra.map((i) => i.name).join(", ")}`));
   }
 
+  if (options.dryRun) {
+    const rows = plan.items.map((item) => {
+      const target = targetInfo(item, config, cwd);
+      const rel = path.relative(cwd, target.filePath);
+      const tag = fs.existsSync(target.filePath) ? styleText("yellow", "exists") : styleText("green", "new");
+      return `${styleText("cyan", "•")} ${rel} ${styleText("dim", `(${tag})`)}`;
+    });
+    p.note(rows.join("\n"), "Would write");
+    if (plan.npm.length) p.log.info(styleText("dim", `Would install: ${plan.npm.join(", ")}`));
+    p.outro(styleText("dim", "Dry run — nothing written."));
+    return;
+  }
+
   // --- fetch every source in parallel
   const total = plan.items.length;
   let fetched = 0;
@@ -124,6 +172,7 @@ export async function add(names: string[], options: AddOptions): Promise<void> {
 
   // --- write sequentially (only overwrite prompts pause here)
   const added: string[] = [];
+  const addedItems: RegistryItem[] = [];
   const unchanged: string[] = [];
   const skipped: string[] = [];
 
@@ -136,7 +185,7 @@ export async function add(names: string[], options: AddOptions): Promise<void> {
         unchanged.push(item.name);
         continue;
       }
-      if (!options.overwrite) {
+      if (!options.overwrite && !options.yes) {
         const ok = await p.confirm({
           message: `${styleText("bold", `${target.base}${target.ext}`)} differs — ${styleText("yellow", "overwrite?")}`,
           initialValue: false,
@@ -151,15 +200,34 @@ export async function add(names: string[], options: AddOptions): Promise<void> {
     writeItemFile(target, content);
     if (config.barrel) appendBarrel(target);
     added.push(item.name);
+    addedItems.push(item);
+  }
+
+  // --- record the newly added items in dufresne.json, if one exists
+  if (existing && added.length) {
+    const declared = new Set(existing.items);
+    let changed = false;
+    for (const name of added) {
+      if (!declared.has(name)) {
+        declared.add(name);
+        changed = true;
+      }
+    }
+    if (changed) {
+      writeConfig(cwd, { ...existing, items: [...declared].sort() });
+      p.log.info(styleText("dim", `Recorded in ${CONFIG_FILE} — \`dufresne sync\` reinstalls this set.`));
+    }
   }
 
   // --- npm packages
   if (added.length && plan.npm.length) {
     const pm = detectPackageManager(cwd);
-    const proceed = await p.confirm({
-      message: `Install ${styleText("bold", plan.npm.join(", "))} with ${styleText("cyan", pm)}?`,
-      initialValue: true,
-    });
+    const proceed = options.yes
+      ? true
+      : await p.confirm({
+          message: `Install ${styleText("bold", plan.npm.join(", "))} with ${styleText("cyan", pm)}?`,
+          initialValue: true,
+        });
     if (!p.isCancel(proceed) && proceed) {
       const inst = p.spinner();
       inst.start(`Installing ${plan.npm.length} package${plan.npm.length === 1 ? "" : "s"}...`);
@@ -184,6 +252,15 @@ export async function add(names: string[], options: AddOptions): Promise<void> {
   ].filter(Boolean) as string[];
 
   if (summary.length) p.note(summary.join("\n"), "Result");
+
+  if (addedItems.length) {
+    const imports = addedItems.map((item) => {
+      const stmt = item.type === "type" ? "import type" : "import";
+      return styleText("dim", `${stmt} { ${item.name} } from '${importAlias(item, config)}';`);
+    });
+    p.note(imports.join("\n"), "Import");
+  }
+
   p.outro(
     added.length
       ? styleText("cyan", `Done — ${added.length} file${added.length === 1 ? "" : "s"} written.`)

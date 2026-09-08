@@ -11,6 +11,7 @@
     "node": ">=22.18"
   },
   "scripts": {
+    "new": "node scripts/new-item.ts",
     "registry": "node scripts/build-registry.ts",
     "start": "node cli/index.ts",
     "dev": "node --watch cli/index.ts",

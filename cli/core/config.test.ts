@@ -13,6 +13,12 @@ test("normalizeConfig fills every field from a partial object", () => {
   assert.equal(cfg.case, "kebab");
   assert.equal(cfg.barrel, true);
   assert.equal(cfg.comments, true);
+  assert.deepEqual(cfg.items, []);
+});
+
+test("normalizeConfig keeps a declared items list, dropping non-strings", () => {
+  const cfg = normalizeConfig({ items: ["chunk", "clamp", 42, null] });
+  assert.deepEqual(cfg.items, ["chunk", "clamp"]);
 });
 
 test("normalizeConfig respects an explicit types path and alias", () => {

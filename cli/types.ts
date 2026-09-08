@@ -51,4 +51,9 @@ export interface Config {
   aliases: { utils: string; helpers: string; types: string };
   /** On-disk destinations, relative to the project root. */
   paths: { utils: string; helpers: string; types: string };
+  /**
+   * The declared set of items this project depends on. `add` appends to it
+   * (when `dufresne.json` exists); `dufresne sync` installs exactly this set.
+   */
+  items: string[];
 }
