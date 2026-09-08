@@ -191,3 +191,7 @@ format, and the conventions for adding a new utility.
 ## License
 
 MIT
+
+---
+
+<sub>*"Get busy living, or get busy dying."* — Andy Dufresne spent nineteen years tunneling through a wall to freedom. This package skips the wall.</sub>
