@@ -12,7 +12,12 @@ export default defineConfig({
   dts: false,
   clean: true,
   minify: true,
-  sourcemap: true,
+  // No sourcemaps in the published bundle: they were ~70% of the unpacked
+  // package (map for a ~26kB chunk was ~87kB) and buy little in practice —
+  // local dev already runs unbundled source directly (`pnpm start`/`dev`
+  // execute cli/index.ts as-is), so nothing here is ever debugged through
+  // the minified dist/ output.
+  sourcemap: false,
   define: {
     "process.env.VERSION": JSON.stringify(version),
   },

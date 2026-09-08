@@ -1,6 +1,7 @@
 {
   "name": "dufresne",
   "version": "0.1.0",
+  "description": "Copy small, dependency-free TypeScript utilities, algorithms, data structures and types straight into your project instead of installing a package for them — shadcn/ui, applied to code.",
   "bin": {
     "dufresne": "./dist/index.js"
   },
@@ -26,7 +27,9 @@
     "check": "pnpm run lint && pnpm run test && pnpm run check:registry",
     "build": "node scripts/build-registry.ts && tsdown",
     "release": "release-it",
-    "prepublishOnly": "pnpm run build"
+    "prepublishOnly": "pnpm run build",
+    "prepack": "node scripts/pack-readme.ts swap",
+    "postpack": "node scripts/pack-readme.ts restore"
   },
   "repository": {
     "type": "git",
@@ -34,9 +37,19 @@
   },
   "keywords": [
     "utils",
+    "utilities",
     "underscore",
     "lodash",
-    "helpers"
+    "helpers",
+    "algorithms",
+    "data-structures",
+    "typescript",
+    "types",
+    "type-fest",
+    "cli",
+    "shadcn",
+    "copy-paste",
+    "registry"
   ],
   "author": "dayan",
   "license": "MIT",

@@ -193,7 +193,15 @@ pnpm new <Name>   # scaffold src/utils|helpers/types/<Name>/ (implementation + t
 pnpm registry     # regenerate registry.json from src/
 pnpm check        # lint + test + verify registry.json is up to date
 pnpm build        # registry + tsdown bundle -> dist/
+npm pack --dry-run # preview exactly what `npm publish` would ship, and its size
 ```
+
+The published package is ~10kB (~30kB unpacked): no sourcemaps in the bundle
+(local dev already runs unbundled source, so nothing is ever debugged through
+`dist/`), and `README.md` itself is swapped for a short npm-page version at
+pack time (`prepack`/`postpack` in [package.json](package.json) — the repo's
+own `README.md` you're reading is unaffected; see
+[scripts/pack-readme.ts](scripts/pack-readme.ts)).
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for the repo layout, the registry
 format, and the conventions for adding a new utility.

@@ -226,6 +226,18 @@ separate `dist/main-*.js` chunk for the rest, and `npm pack` ships both
 
 ## Scaling notes
 
+- **Published package size: ~30kB unpacked, down from ~126kB.** Two changes,
+  found by actually reading `npm pack --dry-run`'s output instead of guessing:
+  sourcemaps were ~70% of the tarball for a bundle nothing ever debugs
+  through (`tsdown.config.ts`'s `sourcemap: false`), and `README.md` itself
+  is ~7% — swapped for a short npm-page version only during `prepack`
+  (restored in `postpack`) via [scripts/pack-readme.ts](scripts/pack-readme.ts).
+  The short source lives at `scripts/npm-readme.md`, deliberately **not**
+  `README*` at the repo root — npm always bundles any file matching that
+  pattern regardless of `files`/`.npmignore`, so a root-level short-readme
+  file would ship *alongside* the swapped-in one instead of replacing it
+  (this shipped as a real duplicate before the file got moved — verify with
+  `npm pack --dry-run` after touching either script, not just by reading it).
 - **Command orchestration is tested end-to-end, not just its pieces.**
   `cli/core`/`cli/lib` are unit-tested, but `cli/commands/*.ts` — the actual
   `add`/`update`/`remove`/`sync` logic — only got manual, throwaway smoke
