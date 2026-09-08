@@ -2,6 +2,115 @@
   "schemaVersion": "2",
   "baseUrl": "https://raw.githubusercontent.com/bayoux/dufresne/main/src",
   "items": {
+    "chunk": {
+      "id": "dfr-dd355712",
+      "type": "util",
+      "name": "chunk",
+      "file": "utils/chunk/chunk.ts",
+      "description": "Splits an array into chunks of the given size.",
+      "category": "array",
+      "tags": [
+        "array",
+        "split",
+        "transform"
+      ],
+      "usage": "high",
+      "examples": [
+        "chunk([1, 2, 3, 4, 5], 2); // [[1, 2], [3, 4], [5]]"
+      ],
+      "hash": "543947e76edb62fb5725f98cf23ccd0e527c3b44c9ee57e6be15e1bd1b6f48ec",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "clamp": {
+      "id": "dfr-c00085ac",
+      "type": "util",
+      "name": "clamp",
+      "file": "utils/clamp/clamp.ts",
+      "description": "Restricts a number to the given inclusive range.",
+      "category": "number",
+      "tags": [
+        "number",
+        "math"
+      ],
+      "usage": "medium",
+      "examples": [
+        "clamp(15, 0, 10); // 10\nclamp(-5, 0, 10); // 0"
+      ],
+      "hash": "73e076c2d5f5eb502e6de52e09ff04da6ee908900445b636325847b1e80bd28c",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "debounce": {
+      "id": "dfr-538cdead",
+      "type": "util",
+      "name": "debounce",
+      "file": "utils/debounce/debounce.ts",
+      "description": "Wraps a function so it only runs after `delay` ms of silence.",
+      "category": "function",
+      "tags": [
+        "function",
+        "timing",
+        "performance"
+      ],
+      "usage": "high",
+      "examples": [
+        "const onResize = debounce(() => console.log(\"resized\"), 200);\nwindow.addEventListener(\"resize\", onResize);"
+      ],
+      "hash": "f98bf7bca7d661c7e002d0e64410370c56bf9dc7a8ab970633f98501f4a7bc19",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "DeepPartial": {
+      "id": "dfr-31570988",
+      "type": "util",
+      "name": "DeepPartial",
+      "file": "utils/DeepPartial/DeepPartial.ts",
+      "description": "Recursively makes every property of `T` (including nested",
+      "category": "types",
+      "tags": [
+        "types",
+        "object",
+        "partial"
+      ],
+      "usage": "medium",
+      "examples": [
+        "type Config = { server: { host: string; port: number } };\ntype PartialConfig = DeepPartial<Config>;\n// { server?: { host?: string; port?: number } }"
+      ],
+      "hash": "e32a69ba581f9267bd9eb09ee51303a57c3708f2926f37080ad38e7d593d33dc",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "groupBy": {
+      "id": "dfr-659431ba",
+      "type": "util",
+      "name": "groupBy",
+      "file": "utils/groupBy/groupBy.ts",
+      "description": "Groups array items into a record keyed by the given selector.",
+      "category": "array",
+      "tags": [
+        "array",
+        "object",
+        "group"
+      ],
+      "usage": "high",
+      "examples": [
+        "groupBy([1, 2, 3, 4], (n) => (n % 2 === 0 ? \"even\" : \"odd\"));\n// { odd: [1, 3], even: [2, 4] }"
+      ],
+      "hash": "367e0f019f688fbd5b933253b9a95abc512426bbb3070153879027bad306ed9b",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
     "intersection": {
       "id": "dfr-067114f5",
       "type": "util",
@@ -24,6 +133,50 @@
         "internal": []
       }
     },
+    "PartialBy": {
+      "id": "dfr-e3cff5e7",
+      "type": "util",
+      "name": "PartialBy",
+      "file": "utils/PartialBy/PartialBy.ts",
+      "description": "Makes the given keys of `T` optional while leaving the rest",
+      "category": "types",
+      "tags": [
+        "types",
+        "object",
+        "partial"
+      ],
+      "usage": "medium",
+      "examples": [
+        "interface User { id: string; name: string; email: string }\ntype NewUser = PartialBy<User, \"id\">;\n// { id?: string; name: string; email: string }"
+      ],
+      "hash": "f158201176ed803acd1eeb7b090fa40816039579133bb097c9a73199133ebae7",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "Prettify": {
+      "id": "dfr-e2b96cd3",
+      "type": "util",
+      "name": "Prettify",
+      "file": "utils/Prettify/Prettify.ts",
+      "description": "Flattens an intersection type into a single object type, so",
+      "category": "types",
+      "tags": [
+        "types",
+        "object",
+        "dx"
+      ],
+      "usage": "medium",
+      "examples": [
+        "type Merged = Prettify<{ a: string } & { b: number }>;\n// hovers as { a: string; b: number }"
+      ],
+      "hash": "f37048478a8e627995057dcad5f6f833ba83027740adcb0409ea320473fb23bd",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
     "pull": {
       "id": "dfr-b4fea42f",
       "type": "util",
@@ -41,6 +194,28 @@
         "pull([1, 2, 3, 1, 2], 2, 3); // [1, 1]"
       ],
       "hash": "06e392e4214efc0ab6afacaf5017ac5285e324645355caefa9b38231770f5980",
+      "dependencies": {
+        "npm": [],
+        "internal": []
+      }
+    },
+    "sleep": {
+      "id": "dfr-9b8b4e53",
+      "type": "util",
+      "name": "sleep",
+      "file": "utils/sleep/sleep.ts",
+      "description": "Returns a promise that resolves after the given delay.",
+      "category": "async",
+      "tags": [
+        "async",
+        "promise",
+        "timing"
+      ],
+      "usage": "medium",
+      "examples": [
+        "await sleep(200);"
+      ],
+      "hash": "e07e835c161a4953e6dbd2c605a6ab3d0b90bd146ab08b0939160cc5b9c54b83",
       "dependencies": {
         "npm": [],
         "internal": []

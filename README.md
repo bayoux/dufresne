@@ -58,10 +58,22 @@ to sane defaults (`./utils`, `./lib`).
 
 ## Available utilities
 
-Run `dufresne list` for the live, up-to-date catalog — it's still small
-(`intersection`, `pull`) while this project is early. Every item ships with a
+Run `dufresne list` for the live, up-to-date catalog. Every item ships with a
 JSDoc header (`dufresne info <name>` prints it), a co-located test, and an
 explicit dependency graph.
+
+| Name | Category | Description |
+| --- | --- | --- |
+| `intersection` | array | Values common to every passed array |
+| `pull` | array | Removes every occurrence of the given values |
+| `chunk` | array | Splits an array into chunks of a given size |
+| `groupBy` | array | Groups items into a record keyed by a selector |
+| `clamp` | number | Restricts a number to an inclusive range |
+| `debounce` | function | Wraps a function to only run after N ms of silence |
+| `sleep` | async | Promise that resolves after a delay |
+| `DeepPartial` | types | Recursively makes every property optional |
+| `Prettify` | types | Flattens an intersection type for cleaner hovers |
+| `PartialBy` | types | Makes the given keys of a type optional |
 
 ## Development
 

@@ -20,8 +20,8 @@ src/
   utils/<name>/<name>.test.ts   # co-located test
   helpers/<name>/<name>.ts      # shared building blocks utils may depend on
 cli/
-  index.ts                      # arg parsing + command dispatch
-  commands/{add,list,init}.ts   # one file per command
+  index.ts                        # arg parsing + command dispatch
+  commands/{add,list,init,info}.ts  # one file per command
   core/
     http.ts                     # registry + file fetching
     registry.ts                 # resolveDependencies() — the graph walk
@@ -55,8 +55,17 @@ scripts/
    ```
 
 2. Add `<name>.test.ts` next to it. **Required** — the registry build fails
-   without it.
+   without it. A pure-type item (no runtime code) still gets one: assign a
+   value to the type and assert on that value — it doubles as a compile-time
+   check (`pnpm lint` fails if the type is wrong) and a real, if trivial,
+   runtime test.
 3. `pnpm registry` regenerates `registry.json`.
+
+Pure TypeScript utility types (`DeepPartial`, `Prettify`, …) live under
+`src/utils/` too, tagged `category: "types"` — they install to the same
+`utils/` target as functions. There's no separate `ItemType` for them; adding
+one would mean a third install path/alias in every config, for what is really
+just a different `category`.
 
 That's it — no central index to edit. `pnpm test` picks the test up
 automatically (`node --test` globs `**/*.test.ts`).
